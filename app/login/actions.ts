@@ -88,7 +88,7 @@ export async function updateProfile(prevState: AuthState | null, formData: FormD
     .update({ 
        username: username,
        gender: gender,
-       age: age,
+       age: age ? Number.parseInt(age, 10) : null,
        full_name: full_name,
        updated_at: new Date().toDateString(),
     })

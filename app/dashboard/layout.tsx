@@ -9,20 +9,28 @@ export default async function DashboardLayout({
 }) {
   const supabase = await createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase.from('profiles').select('username').eq('id', user?.id).single();
-  
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user?.id || "")
+    .single();
+
   if (!profile?.username) {
     redirect("/onboarding");
   }
 
-  return <>{
-    <div className="flex min-h-dvh flex-col pb-16">
-      <main>
-        {children}
-      </main>
-      <BottomNav />
-    </div>
-    }</>;
+  return (
+    <>
+      {
+        <div className="flex min-h-dvh flex-col pb-16">
+          <main>{children}</main>
+          <BottomNav />
+        </div>
+      }
+    </>
+  );
 }
