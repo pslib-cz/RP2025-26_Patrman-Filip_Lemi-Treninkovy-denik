@@ -4,17 +4,8 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import SmartKeyboard from "@/components/SmartKeyboard";
 import { Check, Copy, Zap } from "lucide-react";
-
-type Skill = {
-  id: string;
-  fig_code: string;
-  difficulty: number;
-};
-type Round = {
-  id: string;
-  skills: Skill[];
-  total_difficulty: number;
-};
+import { Skill, Round } from "@/types/training";
+import { CurrentRoundBoard } from "@/components/CurrentRoundBoard";
 
 export default function LogPage() {
   const [currentInput, setCurrentInput] = useState<string>("");
@@ -55,17 +46,20 @@ export default function LogPage() {
     }
   };
   const handleConfirmRound = () => {
-    if (currentRoundSkills.length === 0 ) return
+    if (currentRoundSkills.length === 0) return;
 
     const newRound: Round = {
-        id: uuidv4(),
-        skills: currentRoundSkills,
-        total_difficulty: currentRoundSkills.reduce((acc, skill) => acc + skill.difficulty, 0)
-    }
-    setRounds((prev) => [...prev, newRound])
-    setCurrentRoundSkills([])
-    setCurrentInput("")
-  }
+      id: uuidv4(),
+      skills: currentRoundSkills,
+      total_difficulty: currentRoundSkills.reduce(
+        (acc, skill) => acc + skill.difficulty,
+        0,
+      ),
+    };
+    setRounds((prev) => [...prev, newRound]);
+    setCurrentRoundSkills([]);
+    setCurrentInput("");
+  };
   return (
     <div className="min-h-screen pb-12">
       <div className="max-w-md mx-auto p-4 pt-8 flex flex-col gap-6">
@@ -94,32 +88,10 @@ export default function LogPage() {
           </p>
         </div>
         {currentRoundSkills.length > 0 && (
-          <div className="border border-orange-200 border-dashed rounded-xl p-4 flex flex-col gap-4 bg-orange-50/50">
-            <div className="flex justify-between items-center">
-              <p className="font-semibold text-xs text-muted-foreground uppercase tracking-widest">
-                Current round ({currentRoundSkills.length} skills)
-              </p>
-              <p className="text-primary text-sm font-semibold">
-                Total DD: 0.5
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {currentRoundSkills.map((skill) => (
-                <span
-                  key={skill.id}
-                  className="bg-white/80 border border-slate-200 text-slate-700 font-mono text-sm shadow-sm font-medium rounded-full px-3 py-1.5"
-                >
-                  {skill.fig_code}
-                </span>
-              ))}
-            </div>
-
-            <button onClick={() => handleConfirmRound()} className="w-full mt-2 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-sm">
-              <Check className="w-5 h-5" />
-              Confirm Round
-            </button>
-          </div>
+          <CurrentRoundBoard
+            skills={currentRoundSkills}
+            onConfirm={handleConfirmRound}
+          />
         )}
         <p>
           Rounds:{" "}
