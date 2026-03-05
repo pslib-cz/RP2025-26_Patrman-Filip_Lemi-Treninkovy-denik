@@ -59,7 +59,6 @@ export async function signInWithGoogle() {
       redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback`,
     },
   });
-
   if (error) {
     return redirect("/login?message=Could not authenticate with Google");
   }

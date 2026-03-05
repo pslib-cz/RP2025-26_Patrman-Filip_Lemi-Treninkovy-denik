@@ -1,0 +1,89 @@
+import { Delete } from "lucide-react";
+
+interface Props {
+  onKeyPress: (key: string) => void;
+}
+
+// Definice typu pro TypeScript, abychom měli kontrolu
+type KeyType = {
+  label: React.ReactNode;
+  value: string;
+  colSpan?: number; // Kolik sloupců zabere v Gridu (defaultně třeba 2, protože 5 tlačítek na řádek v gridu 10)
+  variant?: "default" | "space" | "delete" | "action"; // Barvičky
+};
+
+const KEYBOARD_ROWS: KeyType[][] = [
+  [
+    { label: "/", value: "/" },
+    { label: "-", value: "-" },
+    { label: "<", value: "<" },
+    { label: "o", value: "o" },
+    { label: "SPACE", value: "SPACE", variant: "space" },
+    {
+      label: <Delete className="w-5 h-5 mx-auto" />,
+      value: "BACKSPACE",
+      variant: "delete",
+    },
+  ],
+  [
+    { label: "0", value: "0" },
+    { label: "1", value: "1" },
+    { label: "2", value: "2" },
+    { label: "3", value: "3" },
+    { label: "4", value: "4" },
+  ],
+  [
+    { label: "5", value: "5" },
+    { label: "6", value: "6" },
+    { label: "7", value: "7" },
+    { label: "8", value: "8" },
+    { label: "9", value: "9" },
+  ],
+  [
+    { label: "2x", value: "2x", variant: "action" },
+    { label: "3x", value: "3x", variant: "action" },
+    { label: "4x", value: "4x", variant: "action" },
+    { label: "5x", value: "5x", variant: "action" },
+  ],
+];
+
+function getVariantClasses(variant?: KeyType["variant"]) {
+  switch (variant) {
+    case "space":
+      return "bg-secondary text-secondary-foreground flex-[2] font-semibold";
+    case "delete":
+      return "bg-destructive text-white flex-1";
+    case "action":
+      return "bg-white text-primary font-bold";
+    default:
+      return "bg-white text-foreground hover:bg-slate-50";
+  }
+}
+
+function SmartKeyboard({ onKeyPress }: Props) {
+  return (
+    <div className="w-full max-w-md mx-auto p-2 bg-slate-50 rounded-xl space-y-2">
+      <p className="text-sm font-semibold text-muted-foreground mb-4 font-sans">
+        SMART KEYBOARD
+      </p>
+
+      {KEYBOARD_ROWS.map((row, btnIndex) => (
+        <div key={btnIndex} className="flex gap-2 w-full">
+          {row.map((btn, btnIndex) => (
+            <button
+              key={btnIndex}
+              className={`flex-1 min-h-[48px] rounded-lg shadow-sm border border-border 
+                                   flex items-center justify-center text-lg active:scale-95 transition-transform 
+                                   ${getVariantClasses(btn.variant)}`}
+              onClick={() => onKeyPress(btn.value)}
+            >
+              {btn.label}
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default SmartKeyboard;
