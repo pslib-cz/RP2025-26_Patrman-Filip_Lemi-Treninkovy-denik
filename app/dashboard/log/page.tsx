@@ -6,6 +6,8 @@ import SmartKeyboard from "@/components/SmartKeyboard";
 import { Check, Copy, Zap } from "lucide-react";
 import { Skill, Round } from "@/types/training";
 import { CurrentRoundBoard } from "@/components/CurrentRoundBoard";
+import { CopyCheckButton } from "@/components/copycheck-button";
+import { LoggedRoundsList } from "@/components/LoggedRoundsList";
 
 export default function LogPage() {
   const [currentInput, setCurrentInput] = useState<string>("");
@@ -60,6 +62,23 @@ export default function LogPage() {
     setCurrentRoundSkills([]);
     setCurrentInput("");
   };
+
+  const handleDeleteRound = (roundId: string) => {
+    setRounds((prev) => prev.filter((round) => round.id !== roundId));
+  };
+
+  const handleDuplicateRound = () => {
+    if (rounds.length === 0) return;
+    const lastRound = rounds.at(-1);
+    if (!lastRound) return;
+    const skillsToDuplicate = lastRound.skills.map((skill) => ({
+      ...skill,
+      id: uuidv4(),
+    }));
+    setCurrentRoundSkills((prev) => [...prev, ...skillsToDuplicate]);
+
+  };
+
   return (
     <div className="min-h-screen pb-12">
       <div className="max-w-md mx-auto p-4 pt-8 flex flex-col gap-6">
@@ -72,7 +91,6 @@ export default function LogPage() {
           <div className="flex gap-2">
             <input
               type="text"
-              readOnly
               inputMode="none"
               value={currentInput}
               placeholder="e.g. 41/ or 8-1/"
@@ -93,24 +111,13 @@ export default function LogPage() {
             onConfirm={handleConfirmRound}
           />
         )}
-        <p>
-          Rounds:{" "}
-          {rounds.map((round) => round.skills.map((skill) => skill.fig_code))}
-        </p>
 
         <SmartKeyboard onKeyPress={handleKeyPress} />
 
-        <div className="mt-4 flex gap-3">
-          <button className="flex-1 py-3 bg-white border border-border text-slate-600 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors shadow-sm">
-            <Copy className="w-5 h-5" />
-            Duplicate Last
-          </button>
-
-          <button className="flex-[1.5] py-3 bg-slate-400 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-slate-500 transition-colors shadow-sm focus:ring-2 focus:ring-slate-400 focus:outline-none">
-            <Check className="w-5 h-5" />
-            Finish Session
-          </button>
-        </div>
+        <CopyCheckButton onDuplicateRound={handleDuplicateRound} />
+        {rounds.length > 0 && (
+          <LoggedRoundsList rounds={rounds} onDeleteRound={handleDeleteRound} />
+        )}
       </div>
     </div>
   );
