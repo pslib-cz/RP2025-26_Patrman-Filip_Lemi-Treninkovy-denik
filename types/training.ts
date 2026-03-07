@@ -8,3 +8,11 @@ export type Round = {
   skills: Skill[];
   total_difficulty: number;
 };
+
+export type DbSkill = {
+  id: string;
+  code: string;
+  name: string;
+  difficulty_value: number;
+  direction: string;
+};
