@@ -10,6 +10,7 @@ import { LoggedRoundsList } from "@/components/LoggedRoundsList";
 import { finishTrainingSession } from "@/services/log.service";
 import { Zap } from "lucide-react";
 import { FinishSessionScreen } from "@/components/FinishSessionScreen";
+import { TofBanner } from "@/components/TofBanner";
 
 export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
   const [currentInput, setCurrentInput] = useState<string>("");
@@ -19,7 +20,9 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
   const [rating, setRating] = useState<number>(0);
   const [isFinishing, setIsFinishing] = useState<boolean>(false);
   const [notes, setNotes] = useState<string>("");
-  
+  const [showTofInput, setShowTofInput] = useState(false);
+  const [tofValue, setTofValue] = useState("");
+
   const handleKeyPress = (key: string) => {
     setErrorMsg(null);
 
@@ -29,6 +32,8 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
       let finalDiff = 0;
 
       if (currentInput === "-") {
+        setShowTofInput(true);
+        setTofValue("");
         finalDiff = 0;
       } else {
         const foundSkill = dictionary.find(
@@ -102,23 +107,47 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
     setCurrentRoundSkills((prev) => [...prev, ...skillsToDuplicate]);
   };
   const handleFinishSession = () => {
-    if(rounds.length === 0) return;
+    if (rounds.length === 0) return;
     setIsFinishing(true);
+  };
+
+  if (isFinishing) {
+    return (
+      <div className="min-h-screen bg-slate-50/50">
+        <FinishSessionScreen
+          rating={rating}
+          setRating={setRating}
+          notes={notes}
+          setNotes={setNotes}
+          onSave={() => finishTrainingSession(rounds, rating, notes)}
+          onCancel={() => setIsFinishing(false)}
+        />
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen pb-12">
-        {isFinishing && (
-            <FinishSessionScreen
-                rating={rating}
-                setRating={setRating}
-                notes={notes}
-                setNotes={setNotes}
-                onSave={()=> finishTrainingSession(rounds)}
-                onCancel={()=> setIsFinishing(false)}
-            />
-        )}
       <div className="max-w-md mx-auto p-4 pt-8 flex flex-col gap-6">
+        {showTofInput && (
+          <TofBanner
+            tofValue={tofValue}
+            setTofValue={setTofValue}
+            onSave={(tofNum) => {
+              const newSkill: Skill = {
+                id: uuidv4(),
+                fig_code: "-",
+                difficulty: 0,
+                tof: tofNum,
+              };
+              setCurrentRoundSkills((prev) => [...prev, newSkill]);
+              setShowTofInput(false);
+              setTofValue("");
+            }}
+            onClose={() => setShowTofInput(false)}
+          />
+        )}
+
         <div className="gap-2">
           <h1 className="font-bold text-2xl">New Training Session</h1>
           <p className="text-sm text-muted-foreground">Datum</p>
@@ -134,11 +163,18 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
               placeholder="e.g. 41/ or 8-1/"
               className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400"
             />
-            <button className="w-12 h-12 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors">
+            <button
+              onClick={() => handleKeyPress("SPACE")}
+              className="w-12 h-12 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors"
+            >
               <Zap className="w-5 h-5 fill-white" />
             </button>
           </div>
-          {errorMsg && <p className="text-sm font-semibold text-destructive animate-pulse">{errorMsg}</p>}
+          {errorMsg && (
+            <p className="text-sm font-semibold text-destructive animate-pulse">
+              {errorMsg}
+            </p>
+          )}
           <p className="text-sm text-muted-foreground">
             Press Space or Enter to add. Tip: Type &apos; - &apos; alone to
             record your 10-jump max time.

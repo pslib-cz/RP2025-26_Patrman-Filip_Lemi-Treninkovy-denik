@@ -15,7 +15,10 @@ export function CurrentRoundBoard({ skills, onConfirm }: Props) {
         <p className="font-semibold text-xs text-muted-foreground uppercase tracking-widest">
           Current round ({skills.length} skills)
         </p>
-        <p className="text-primary text-sm font-semibold">Total DD: {skills.reduce((acc, skill) => acc + skill.difficulty, 0).toFixed(1)}</p>
+        <p className="text-primary text-sm font-semibold">
+          Total DD:{" "}
+          {skills.reduce((acc, skill) => acc + skill.difficulty, 0).toFixed(1)}
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -24,7 +27,9 @@ export function CurrentRoundBoard({ skills, onConfirm }: Props) {
             key={skill.id}
             className="bg-white/80 border border-slate-200 text-slate-700 font-mono text-sm shadow-sm font-medium rounded-full px-3 py-1.5"
           >
-            {skill.fig_code}
+            {skill.fig_code === "-" && skill.tof !== undefined
+              ? `- (${skill.tof}s)`
+              : skill.fig_code}
           </span>
         ))}
       </div>

@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server"; // Tady si nejsem jistý tvojí cestou k Supabase klientovi, ujisti se, že je správná!
 import { Round } from "@/types/training";
 
-export async function finishTrainingSession(rounds: Round[]) {
+export async function finishTrainingSession(rounds: Round[], rating: number, notes: string) {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -21,6 +21,8 @@ export async function finishTrainingSession(rounds: Round[]) {
       max_difficulty: maxDiff,
       total_difficulty: totalDiff,
       total_rounds: rounds.length,
+      rating: rating,
+      notes: notes,
       date: new Date().toISOString(),
     })
     .select("id")

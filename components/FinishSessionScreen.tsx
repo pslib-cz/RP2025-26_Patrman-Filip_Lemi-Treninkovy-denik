@@ -11,7 +11,7 @@ interface Props {
 
 export function FinishSessionScreen({ rating, setRating, notes, setNotes, onSave, onCancel }: Props) {
   return (
-    <div className="flex flex-col items-center justify-center p-6 gap-8 bg-white rounded-2xl shadow-sm border border-slate-100 max-w-sm mx-auto mt-8">
+    <div className="flex flex-col flex-1 gap-8 pt-8 px-4 bg-slate-50/50 items-center justify-center mt-8">
       
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-slate-900">How was your session?</h2>

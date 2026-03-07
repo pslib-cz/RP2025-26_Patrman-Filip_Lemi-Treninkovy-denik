@@ -2,6 +2,7 @@ export type Skill = {
   id: string;
   fig_code: string;
   difficulty: number;
+  tof?: number;
 };
 export type Round = {
   id: string;

@@ -15,18 +15,18 @@ export function LoggedRoundsList({ rounds, onDeleteRound }: Props) {
       <h2 className="font-bold text-lg text-slate-800">
         Logged Rounds ({rounds.length})
       </h2>
-      
+
       <div className="flex flex-col gap-3">
         {rounds.map((round, index) => (
-          <div 
-            key={round.id} 
+          <div
+            key={round.id}
             className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col gap-3"
           >
             <div className="flex justify-between items-center">
               <span className="font-bold text-slate-900">
                 Round {index + 1}
               </span>
-              
+
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-slate-500">
                   {round.skills.length} skills
@@ -37,7 +37,10 @@ export function LoggedRoundsList({ rounds, onDeleteRound }: Props) {
                 <button className="text-slate-400 hover:text-slate-600 transition-colors">
                   <Pencil className="w-4 h-4" />
                 </button>
-                <button onClick={() => onDeleteRound(round.id)} className="text-slate-400 hover:text-destructive transition-colors">
+                <button
+                  onClick={() => onDeleteRound(round.id)}
+                  className="text-slate-400 hover:text-destructive transition-colors"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -49,11 +52,12 @@ export function LoggedRoundsList({ rounds, onDeleteRound }: Props) {
                   key={skill.id}
                   className="bg-slate-100 border border-slate-200 text-slate-700 font-mono text-sm shadow-sm rounded-full px-3 py-1.5"
                 >
-                  {skill.fig_code}
+                  {skill.fig_code === "-" && skill.tof !== undefined
+                    ? `- (${skill.tof}s)`
+                    : skill.fig_code}
                 </span>
               ))}
             </div>
-            
           </div>
         ))}
       </div>
