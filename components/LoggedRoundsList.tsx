@@ -32,7 +32,7 @@ export function LoggedRoundsList({ rounds, onDeleteRound }: Props) {
                   {round.skills.length} skills
                 </span>
                 <span className="bg-secondary text-white text-xs font-bold px-2.5 py-1 rounded-md">
-                  DD: {round.total_difficulty}
+                  DD: {round.total_difficulty.toFixed(1)}
                 </span>
                 <button className="text-slate-400 hover:text-slate-600 transition-colors">
                   <Pencil className="w-4 h-4" />

@@ -9,17 +9,13 @@ interface Props {
 export function CurrentRoundBoard({ skills, onConfirm }: Props) {
   if (skills.length === 0) return null;
 
-  // 2. TADY PROSTĚ VLOŽ CELÝ TEN ORANŽOVÝ <div className="border border-orange-200...">
-  // - Nezapomeň nahradit `currentRoundSkills` z tvého starého kódu za `skills` z props!
-  // - Do tlačítka "Confirm Round" dej `onClick={onConfirm}`
-
   return (
     <div className="border border-orange-200 border-dashed rounded-xl p-4 flex flex-col gap-4 bg-orange-50/50">
       <div className="flex justify-between items-center">
         <p className="font-semibold text-xs text-muted-foreground uppercase tracking-widest">
           Current round ({skills.length} skills)
         </p>
-        <p className="text-primary text-sm font-semibold">Total DD: 0.5</p>
+        <p className="text-primary text-sm font-semibold">Total DD: {skills.reduce((acc, skill) => acc + skill.difficulty, 0).toFixed(1)}</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
