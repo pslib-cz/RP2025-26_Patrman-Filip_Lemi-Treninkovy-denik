@@ -13,7 +13,7 @@ export function CopyCheckButton({ onDuplicateRound, onFinishSession }: Props) {
         Duplicate Last
       </button>
 
-      <button onClick={()=> onFinishSession()} className="flex-[1.5] py-3 bg-slate-400 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-slate-500 transition-colors shadow-sm focus:ring-2 focus:ring-slate-400 focus:outline-none">
+      <button onClick={()=> onFinishSession()} className="flex-[1.5] py-3 bg-secondary text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-secondary/80 transition-colors shadow-sm focus:ring-2 focus:ring-secondary focus:outline-none">
         <Check className="w-5 h-5" />
         Finish Session
       </button>

@@ -9,13 +9,17 @@ import { CopyCheckButton } from "@/components/copycheck-button";
 import { LoggedRoundsList } from "@/components/LoggedRoundsList";
 import { finishTrainingSession } from "@/services/log.service";
 import { Zap } from "lucide-react";
+import { FinishSessionScreen } from "@/components/FinishSessionScreen";
 
 export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
   const [currentInput, setCurrentInput] = useState<string>("");
   const [currentRoundSkills, setCurrentRoundSkills] = useState<Skill[]>([]);
   const [rounds, setRounds] = useState<Round[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
+  const [rating, setRating] = useState<number>(0);
+  const [isFinishing, setIsFinishing] = useState<boolean>(false);
+  const [notes, setNotes] = useState<string>("");
+  
   const handleKeyPress = (key: string) => {
     setErrorMsg(null);
 
@@ -97,9 +101,23 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
     }));
     setCurrentRoundSkills((prev) => [...prev, ...skillsToDuplicate]);
   };
+  const handleFinishSession = () => {
+    if(rounds.length === 0) return;
+    setIsFinishing(true);
+  }
 
   return (
     <div className="min-h-screen pb-12">
+        {isFinishing && (
+            <FinishSessionScreen
+                rating={rating}
+                setRating={setRating}
+                notes={notes}
+                setNotes={setNotes}
+                onSave={()=> finishTrainingSession(rounds)}
+                onCancel={()=> setIsFinishing(false)}
+            />
+        )}
       <div className="max-w-md mx-auto p-4 pt-8 flex flex-col gap-6">
         <div className="gap-2">
           <h1 className="font-bold text-2xl">New Training Session</h1>
@@ -136,7 +154,7 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
         <SmartKeyboard onKeyPress={handleKeyPress} />
 
         <CopyCheckButton
-          onFinishSession={() => finishTrainingSession(rounds)}
+          onFinishSession={handleFinishSession}
           onDuplicateRound={handleDuplicateRound}
         />
         {rounds.length > 0 && (
