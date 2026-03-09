@@ -33,9 +33,9 @@ export function CurrentRoundBoard({
   if (skills.length === 0) return null;
 
   return (
-    <div className="border border-orange-200 border-dashed rounded-xl p-4 flex flex-col gap-4 bg-orange-50/50">
+    <div className="border border-orange-200 border-dashed rounded-xl p-3 flex flex-col gap-3 bg-orange-50/50">
       <div className="flex justify-between items-center">
-        <p className="font-semibold text-xs text-muted-foreground uppercase tracking-widest">
+        <p className="font-semibold text-[10px] text-muted-foreground uppercase tracking-widest">
           Current round ({skills.length} skills)
         </p>
         <p className="text-primary text-sm font-semibold">
@@ -48,7 +48,7 @@ export function CurrentRoundBoard({
         {skills.map((skill) => (
           <span
             key={skill.id}
-            className="bg-white/80 border border-slate-200 text-slate-700 font-mono text-sm shadow-sm font-medium rounded-full px-3 py-1.5"
+            className="bg-white/80 border border-slate-200 text-slate-700 font-mono text-xs shadow-sm font-medium rounded-full px-2.5 py-1"
           >
             {skill.fig_code === "-" && skill.tof !== undefined
               ? `- (${skill.tof}s)`
@@ -57,7 +57,7 @@ export function CurrentRoundBoard({
         ))}
       </div>
       {skills.length === 10 && (
-        <div className="bg-white rounded-xl p-4 flex flex-col gap-3 border border-slate-100 mt-2">
+        <div className="bg-white rounded-xl p-3 flex flex-col gap-2 border border-slate-100 mt-1">
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
@@ -103,9 +103,9 @@ export function CurrentRoundBoard({
       )}
       <button
         onClick={handleConfirm}
-        className="w-full mt-2 py-3 bg-primary hover:bg-orange-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-sm"
+        className="w-full mt-1 py-2.5 bg-primary hover:bg-orange-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-sm text-sm"
       >
-        <Check className="w-5 h-5" />
+        <Check className="w-4 h-4" />
         {isEditing ? "Update Round" : "Confirm Round"}
       </button>
       {isEditing && (

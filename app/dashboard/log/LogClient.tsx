@@ -165,15 +165,15 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
 
   return (
     <div className="min-h-screen pb-12">
-      <div className="max-w-md mx-auto p-4 pt-8 flex flex-col gap-6">
-        
-
+      <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <div className="gap-2">
-          <h1 className="font-bold text-2xl">New Training Session</h1>
-          <p className="text-sm text-muted-foreground">Datum</p>
+          <h1 className="font-bold text-xl">New Training Session</h1>
+          <p className="text-xs text-muted-foreground">Datum</p>
         </div>
-        <div className="flex flex-col gap-2">
-          <p className="text-lg">Add Skill Code</p>
+        <div className="flex flex-col gap-1.5">
+          <p className="text-base font-semibold text-slate-700">
+            Add Skill Code
+          </p>
           <div className="flex gap-2">
             <input
               type="text"
@@ -181,13 +181,13 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
               readOnly={true}
               value={currentInput}
               placeholder="e.g. 41/ or 8-1/"
-              className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400"
+              className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400"
             />
             <button
               onClick={() => handleKeyPress("SPACE")}
-              className="w-12 h-12 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors"
+              className="w-10 h-10 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors"
             >
-              <Zap className="w-5 h-5 fill-white" />
+              <Zap className="w-4 h-4 fill-white" />
             </button>
           </div>
           {errorMsg && (
@@ -195,9 +195,9 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
               {errorMsg}
             </p>
           )}
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground leading-tight">
             Press Space or Enter to add. Tip: Type &apos; - &apos; alone to
-            record your 10-jump max time.
+            record your max time.
           </p>
         </div>
         {showTofInput && (

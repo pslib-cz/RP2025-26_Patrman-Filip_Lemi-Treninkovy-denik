@@ -62,8 +62,8 @@ function getVariantClasses(variant?: KeyType["variant"]) {
 
 function SmartKeyboard({ onKeyPress }: Props) {
   return (
-    <div className="w-full max-w-md mx-auto p-2 bg-slate-50 rounded-xl space-y-2">
-      <p className="text-sm font-semibold text-muted-foreground mb-4 font-sans">
+    <div className="w-full max-w-md mx-auto p-1.5 bg-slate-50 rounded-xl space-y-1.5">
+      <p className="text-xs font-semibold text-muted-foreground mb-2 font-sans px-1">
         SMART KEYBOARD
       </p>
 
@@ -72,8 +72,8 @@ function SmartKeyboard({ onKeyPress }: Props) {
           {row.map((btn, btnIndex) => (
             <button
               key={btnIndex}
-              className={`flex-1 min-h-[48px] rounded-lg shadow-sm border border-border 
-                                   flex items-center justify-center text-lg active:scale-95 transition-transform 
+              className={`flex-1 min-h-[40px] rounded-lg shadow-sm border border-border 
+                                   flex items-center justify-center text-base active:scale-95 transition-transform 
                                    ${getVariantClasses(btn.variant)}`}
               onClick={() => onKeyPress(btn.value)}
             >

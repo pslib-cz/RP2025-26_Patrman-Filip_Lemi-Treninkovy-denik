@@ -13,11 +13,11 @@ export default function StatCard({
 }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center bg-card p-4 shadow-sm ${className}`}
+      className={`flex flex-col items-center justify-center bg-card p-3 shadow-sm ${className}`}
     >
-      <div className={`mb-2 rounded-full p-2 ${iconBgClass}`}>{icon}</div>
-      <span className="text-xl font-bold">{value}</span>
-      <span className="text-[8px] text-muted-foreground uppercase mt-1 text-center">
+      <div className={`mb-1.5 rounded-full p-1.5 ${iconBgClass}`}>{icon}</div>
+      <span className="text-lg font-bold">{value}</span>
+      <span className="text-[9px] text-muted-foreground uppercase mt-0.5 text-center">
         {label}
       </span>
     </div>
