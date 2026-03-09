@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server"; // Tady si nejsem jistý tvojí cestou k Supabase klientovi, ujisti se, že je správná!
+import { createClient } from "@/utils/supabase/server";
 import { Round } from "@/types/training";
 
 export async function finishTrainingSession(rounds: Round[], rating: number, notes: string) {

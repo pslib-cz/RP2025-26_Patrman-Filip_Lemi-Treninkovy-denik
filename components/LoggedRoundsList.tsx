@@ -5,9 +5,16 @@ import { Round } from "@/types/training";
 interface Props {
   rounds: Round[];
   onDeleteRound: (roundId: string) => void;
+  onEditRound: (roundId: string) => void;
+  editingRoundId: string | null;
 }
 
-export function LoggedRoundsList({ rounds, onDeleteRound }: Props) {
+export function LoggedRoundsList({
+  rounds,
+  onDeleteRound,
+  onEditRound,
+  editingRoundId,
+}: Props) {
   if (rounds.length === 0) return null;
 
   return (
@@ -20,7 +27,11 @@ export function LoggedRoundsList({ rounds, onDeleteRound }: Props) {
         {rounds.map((round, index) => (
           <div
             key={round.id}
-            className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col gap-3"
+            className={`border rounded-xl p-4 shadow-sm flex flex-col gap-3 transition-colors ${
+              round.id === editingRoundId
+                ? "bg-orange-50 border-orange-300 ring-2 ring-orange-100"
+                : "bg-white border-slate-200"
+            }`}
           >
             <div className="flex justify-between items-center">
               <span className="font-bold text-slate-900">
@@ -34,7 +45,15 @@ export function LoggedRoundsList({ rounds, onDeleteRound }: Props) {
                 <span className="bg-secondary text-white text-xs font-bold px-2.5 py-1 rounded-md">
                   DD: {round.total_difficulty.toFixed(1)}
                 </span>
-                <button className="text-slate-400 hover:text-slate-600 transition-colors">
+                <button
+                  onClick={() => onEditRound(round.id)}
+                  disabled={round.id === editingRoundId}
+                  className={`transition-colors ${
+                    round.id === editingRoundId
+                      ? "text-orange-500"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
                   <Pencil className="w-4 h-4" />
                 </button>
                 <button

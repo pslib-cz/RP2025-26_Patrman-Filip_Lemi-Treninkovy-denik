@@ -8,6 +8,9 @@ export type Round = {
   id: string;
   skills: Skill[];
   total_difficulty: number;
+  is_routine?: boolean;
+  routine_type?: "VS" | "PS";
+  tof?: number;
 };
 
 export type DbSkill = {

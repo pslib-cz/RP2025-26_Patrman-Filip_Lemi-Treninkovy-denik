@@ -22,6 +22,7 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
   const [notes, setNotes] = useState<string>("");
   const [showTofInput, setShowTofInput] = useState(false);
   const [tofValue, setTofValue] = useState("");
+  const [editingRoundId, setEditingRoundId] = useState<string | null>(null);
 
   const handleKeyPress = (key: string) => {
     setErrorMsg(null);
@@ -76,20 +77,54 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
       setCurrentInput((prev) => prev + key);
     }
   };
-  const handleConfirmRound = () => {
+  const handleConfirmRound = (roundData: Partial<Round>) => {
     if (currentRoundSkills.length === 0) return;
 
-    const newRound: Round = {
-      id: uuidv4(),
-      skills: currentRoundSkills,
-      total_difficulty: currentRoundSkills.reduce(
-        (acc, skill) => acc + skill.difficulty,
-        0,
-      ),
-    };
-    setRounds((prev) => [...prev, newRound]);
+    if (editingRoundId) {
+      setRounds((prev) =>
+        prev.map((round) => {
+          if (round.id === editingRoundId) {
+            return {
+              ...round,
+              skills: currentRoundSkills,
+              total_difficulty: currentRoundSkills.reduce(
+                (acc, skill) => acc + skill.difficulty,
+                0,
+              ),
+              is_routine: roundData.is_routine,
+              routine_type: roundData.routine_type,
+              tof: roundData.tof,
+            };
+          }
+          return round;
+        }),
+      );
+      setEditingRoundId(null);
+    } else {
+      const newRound: Round = {
+        id: uuidv4(),
+        skills: currentRoundSkills,
+        total_difficulty: currentRoundSkills.reduce(
+          (acc, skill) => acc + skill.difficulty,
+          0,
+        ),
+        is_routine: roundData.is_routine,
+        routine_type: roundData.routine_type,
+        tof: roundData.tof,
+      };
+      setRounds((prev) => [...prev, newRound]);
+    }
+
     setCurrentRoundSkills([]);
     setCurrentInput("");
+  };
+
+  const handleEditRound = (roundId: string) => {
+    const roundToEdit = rounds.find((r) => r.id === roundId);
+    if (roundToEdit) {
+      setEditingRoundId(roundId);
+      setCurrentRoundSkills([...roundToEdit.skills]);
+    }
   };
 
   const handleDeleteRound = (roundId: string) => {
@@ -129,24 +164,7 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
   return (
     <div className="min-h-screen pb-12">
       <div className="max-w-md mx-auto p-4 pt-8 flex flex-col gap-6">
-        {showTofInput && (
-          <TofBanner
-            tofValue={tofValue}
-            setTofValue={setTofValue}
-            onSave={(tofNum) => {
-              const newSkill: Skill = {
-                id: uuidv4(),
-                fig_code: "-",
-                difficulty: 0,
-                tof: tofNum,
-              };
-              setCurrentRoundSkills((prev) => [...prev, newSkill]);
-              setShowTofInput(false);
-              setTofValue("");
-            }}
-            onClose={() => setShowTofInput(false)}
-          />
-        )}
+        
 
         <div className="gap-2">
           <h1 className="font-bold text-2xl">New Training Session</h1>
@@ -180,10 +198,33 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
             record your 10-jump max time.
           </p>
         </div>
+        {showTofInput && (
+          <TofBanner
+            tofValue={tofValue}
+            setTofValue={setTofValue}
+            onSave={(tofNum) => {
+              const newSkill: Skill = {
+                id: uuidv4(),
+                fig_code: "-",
+                difficulty: 0,
+                tof: tofNum,
+              };
+              setCurrentRoundSkills((prev) => [...prev, newSkill]);
+              setShowTofInput(false);
+              setTofValue("");
+            }}
+            onClose={() => setShowTofInput(false)}
+          />
+        )}
         {currentRoundSkills.length > 0 && (
           <CurrentRoundBoard
             skills={currentRoundSkills}
             onConfirm={handleConfirmRound}
+            isEditing={!!editingRoundId}
+            onCancelEdit={() => {
+              setEditingRoundId(null);
+              setCurrentRoundSkills([]);
+            }}
           />
         )}
 
@@ -194,7 +235,12 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
           onDuplicateRound={handleDuplicateRound}
         />
         {rounds.length > 0 && (
-          <LoggedRoundsList rounds={rounds} onDeleteRound={handleDeleteRound} />
+          <LoggedRoundsList
+            rounds={rounds}
+            onDeleteRound={handleDeleteRound}
+            onEditRound={handleEditRound}
+            editingRoundId={editingRoundId}
+          />
         )}
       </div>
     </div>

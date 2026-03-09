@@ -1,12 +1,35 @@
 import { Check } from "lucide-react";
-import { Skill } from "@/types/training";
+import { Skill, Round } from "@/types/training";
+import { useState } from "react";
 
 interface Props {
   skills: Skill[];
-  onConfirm: () => void;
+  onConfirm: (roundData: Partial<Round>) => void;
+  isEditing: boolean;
+  onCancelEdit: () => void;
 }
 
-export function CurrentRoundBoard({ skills, onConfirm }: Props) {
+export function CurrentRoundBoard({
+  skills,
+  onConfirm,
+  isEditing,
+  onCancelEdit,
+}: Props) {
+  const [isRoutine, setIsRoutine] = useState(false);
+  const [routineType, setRoutineType] = useState<"VS" | "PS">("VS");
+  const [routineTof, setRoutineTof] = useState("");
+
+  const handleConfirm = () => {
+    onConfirm({
+      is_routine: isRoutine,
+      routine_type: isRoutine ? routineType : undefined,
+      tof: isRoutine && routineTof ? parseFloat(routineTof) : undefined,
+    });
+    setIsRoutine(false);
+    setRoutineType("VS");
+    setRoutineTof("");
+  };
+
   if (skills.length === 0) return null;
 
   return (
@@ -33,14 +56,66 @@ export function CurrentRoundBoard({ skills, onConfirm }: Props) {
           </span>
         ))}
       </div>
+      {skills.length === 10 && (
+        <div className="bg-white rounded-xl p-4 flex flex-col gap-3 border border-slate-100 mt-2">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={isRoutine}
+              onChange={(e) => setIsRoutine(e.target.checked)}
+              className="w-5 h-5 rounded border-slate-300 text-orange-500 focus:ring-orange-500"
+            />
+            <span className="font-bold text-slate-800">Mark as Routine</span>
 
+            {isRoutine && (
+              <div className="flex bg-slate-100 rounded-lg p-1 ml-auto">
+                <button
+                  onClick={() => setRoutineType("VS")}
+                  className={`px-3 py-1 text-sm font-bold rounded-md ${routineType === "VS" ? "bg-orange-500 text-white" : "text-slate-500"}`}
+                >
+                  VS
+                </button>
+                <button
+                  onClick={() => setRoutineType("PS")}
+                  className={`px-3 py-1 text-sm font-bold rounded-md ${routineType === "PS" ? "bg-slate-300 text-white" : "text-slate-500"}`}
+                >
+                  PS
+                </button>
+              </div>
+            )}
+          </div>
+          {isRoutine && (
+            <div className="flex items-center justify-between text-slate-500 text-sm mt-2 pl-8">
+              <div className="flex items-center gap-2">
+                <span className="text-xs">⏱️</span> Routine Height / Time (ToF):
+              </div>
+              <input
+                type="number"
+                step="0.1"
+                placeholder="e.g. 16.5"
+                value={routineTof}
+                onChange={(e) => setRoutineTof(e.target.value)}
+                className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-slate-800"
+              />
+            </div>
+          )}
+        </div>
+      )}
       <button
-        onClick={() => onConfirm()}
-        className="w-full mt-2 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-sm"
+        onClick={handleConfirm}
+        className="w-full mt-2 py-3 bg-primary hover:bg-orange-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-sm"
       >
         <Check className="w-5 h-5" />
-        Confirm Round
+        {isEditing ? "Update Round" : "Confirm Round"}
       </button>
+      {isEditing && (
+        <button
+          onClick={onCancelEdit}
+          className="text-sm font-bold text-red-500 underline text-center w-full mt-2"
+        >
+          Cancel editing
+        </button>
+      )}
     </div>
   );
 }
