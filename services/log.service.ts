@@ -12,8 +12,16 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
   }
   
   let maxDiff = 0;
+  let totalJumps = 0;
+  let totalRoutines = 0; 
   for ( const round of rounds){
+    if(round.is_routine){
+      totalRoutines++;
+    }
     for ( const skill of round.skills){
+      if (skill.fig_code !== "-") { 
+         totalJumps++;
+      }
       if (skill.difficulty > maxDiff){
         maxDiff = skill.difficulty;
       }
@@ -41,6 +49,8 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
       total_rounds: rounds.length,
       rating: rating,
       notes: notes,
+      total_jumps: totalJumps,
+      total_routines: totalRoutines,
       date: new Date().toISOString(),
     })
     .select("id")

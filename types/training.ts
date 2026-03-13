@@ -20,3 +20,20 @@ export type DbSkill = {
   difficulty_value: number;
   direction: string;
 };
+
+export interface SessionHistory {
+  id: string;
+  date: string;
+  rating: number | null;
+  total_difficulty: number | null;
+  total_rounds: number | null;
+  notes: string | null;
+  rounds: {
+    id: string;
+    fig_string: string;
+    difficulty: number | null;
+    tof: number | null;
+    is_routine: boolean | null;
+    routine_type: string | null;
+  }[];
+}

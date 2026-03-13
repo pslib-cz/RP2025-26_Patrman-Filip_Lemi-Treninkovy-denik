@@ -140,6 +140,9 @@ export type Database = {
           total_rounds: number | null
           updated_at: string | null
           user_id: string
+          total_jumps: number | null
+          total_routines: number | null
+
         }
         Insert: {
           date?: string
@@ -151,6 +154,9 @@ export type Database = {
           total_rounds?: number | null
           updated_at?: string | null
           user_id: string
+          total_jumps: number | null
+          total_routines: number | null
+
         }
         Update: {
           date?: string
@@ -162,6 +168,9 @@ export type Database = {
           total_rounds?: number | null
           updated_at?: string | null
           user_id?: string
+          total_jumps: number | null
+          total_routines: number | null
+
         }
         Relationships: []
       }
