@@ -1,23 +1,43 @@
 "use client";
 import SessionCard from "@/components/SessionCard";
 import { SessionHistory } from "@/types/training";
+import { useState } from "react";
 
 interface Props {
   sessions: SessionHistory[];
 }
 
 export default function SessionClient({ sessions }: Props) {
+  const [searchQuerry, setSearchQuerry] = useState("");
+  const filteredSessions = sessions.filter((sessions) => {
+    const matchesDate = sessions.date
+      .toLowerCase()
+      .includes(searchQuerry.toLowerCase());
+    const matchesNotes = sessions.notes
+      ?.toLowerCase()
+      .includes(searchQuerry.toLowerCase());
+    const matchesSkills = sessions.rounds.some((round) =>
+      round.fig_string.toLowerCase().includes(searchQuerry.toLowerCase()),
+    );
+
+    return matchesDate || matchesNotes || matchesSkills;
+  });
   return (
     <div>
       <h1>Training Sessions</h1>
       <div>
         <div>
-          <input type="text" placeholder="Search skills or dates..." />
+          <input
+            type="text"
+            placeholder="Search skills or dates..."
+            value={searchQuerry}
+            onChange={(e) => setSearchQuerry(e.target.value)}
+            className="w-full bg-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
           <div></div>
-          {/* Tady budou filters */}
         </div>
         <div className="flex flex-col gap-4 mt-6">
-          {sessions.map((rawSession) => {
+          {filteredSessions.map((rawSession) => {
             const dateObj = new Date(rawSession.date);
 
             const formattedDate = new Intl.DateTimeFormat("en-US", {
