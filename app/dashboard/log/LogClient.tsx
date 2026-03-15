@@ -211,7 +211,7 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <div className="gap-2">
           <h1 className="font-bold text-xl">New Training Session</h1>
-          <p className="text-xs text-muted-foreground">Datum</p>
+          <p className="text-xs text-muted-foreground">{new Date().toLocaleDateString()}</p>
         </div>
         <div className="flex flex-col gap-1.5">
           <p className="text-base font-semibold text-slate-700">
