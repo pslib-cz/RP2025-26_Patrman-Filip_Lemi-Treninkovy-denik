@@ -10,6 +10,7 @@ interface Props {
 
 export default function SessionClient({ sessions }: Props) {
   const [searchQuerry, setSearchQuerry] = useState("");
+  const [displayCount, setDisplayCount] = useState(5);
   const filteredSessions = sessions.filter((sessions) => {
     const matchesDate = sessions.date
       .toLowerCase()
@@ -23,6 +24,7 @@ export default function SessionClient({ sessions }: Props) {
 
     return matchesDate || matchesNotes || matchesSkills;
   });
+  const displayedSessions = filteredSessions.slice(0, displayCount);
   return (
     <div className="pb-14 min-h-screen bg-slate-50/50">
       <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
@@ -36,12 +38,15 @@ export default function SessionClient({ sessions }: Props) {
               type="text"
               placeholder="Search skills or dates..."
               value={searchQuerry}
-              onChange={(e) => setSearchQuerry(e.target.value)}
+              onChange={(e) => {
+                setSearchQuerry(e.target.value);
+                setDisplayCount(5);
+              }}
               className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 shadow-sm transition-all"
             />
           </div>
           <div className="flex flex-col gap-4 mt-6">
-            {filteredSessions.map((rawSession) => {
+            {displayedSessions.map((rawSession) => {
               const dateObj = new Date(rawSession.date);
 
               const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -68,6 +73,14 @@ export default function SessionClient({ sessions }: Props) {
                 />
               );
             })}
+            {displayCount < filteredSessions.length && (
+              <button
+                onClick={() => setDisplayCount(displayCount + 10)}
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 shadow-sm transition-all"
+              >
+                Load More
+              </button>
+            )}
           </div>
         </div>
       </div>
