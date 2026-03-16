@@ -224,7 +224,7 @@ export type Database = {
           date_mastered: string | null
           id: string
           skill_id: string
-          status: string | null
+          status: "not_started" | "learning" | "mastered"
           updated_at: string | null
           user_id: string
         }
@@ -232,7 +232,7 @@ export type Database = {
           date_mastered?: string | null
           id?: string
           skill_id: string
-          status?: string | null
+          status?: "not_started" | "learning" | "mastered"
           updated_at?: string | null
           user_id: string
         }
@@ -240,7 +240,7 @@ export type Database = {
           date_mastered?: string | null
           id?: string
           skill_id?: string
-          status?: string | null
+          status?: "not_started" | "learning" | "mastered"
           updated_at?: string | null
           user_id?: string
         }

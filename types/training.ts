@@ -39,3 +39,11 @@ export interface SessionHistory {
     routine_type: string | null;
   }[];
 }
+export type UserSkills = {
+  id: string;
+  user_id: string;
+  skill_id: string;
+  status: "not_started" | "learning" | "mastered";
+  date_mastered?: string | null;
+  updated_at?: string | null;
+}

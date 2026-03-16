@@ -1,4 +1,3 @@
-import LemiMascot from "@/components/Lemi-mascot";
 import StatCard from "@/components/StatCard";
 import TrainingCard from "@/components/TrainingCard";
 import { Flame, Calendar, RotateCcw, Zap } from "lucide-react";

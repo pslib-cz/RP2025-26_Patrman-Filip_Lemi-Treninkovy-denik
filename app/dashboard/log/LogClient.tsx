@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import SmartKeyboard from "@/components/SmartKeyboard";
-import { Skill, Round, DbSkill } from "@/types/training";
+import { Skill, Round, DbSkill, UserSkills } from "@/types/training";
 import { CurrentRoundBoard } from "@/components/CurrentRoundBoard";
 import { CopyCheckButton } from "@/components/copycheck-button";
 import { LoggedRoundsList } from "@/components/LoggedRoundsList";
@@ -14,7 +14,12 @@ import { TofBanner } from "@/components/TofBanner";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
+interface Props {
+  dictionary: DbSkill[];
+  userSkills: UserSkills[];
+}
+
+export default function LogClient({ dictionary, userSkills }: Props) {
   const [currentInput, setCurrentInput] = useState<string>("");
   const [currentRoundSkills, setCurrentRoundSkills] = useState<Skill[]>([]);
   const [rounds, setRounds] = useState<Round[]>([]);
@@ -28,6 +33,15 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [skillSuggestion, setSkillSuggestion] = useState<string>("");
+  const userSkillCodes = useMemo(() => {
+    return userSkills
+      .map((us) => {
+        const found = dictionary.find((d) => d.id === us.skill_id);
+        return found ? found.code : null;
+      })
+      .filter((code): code is string => code !== null);
+  }, [dictionary, userSkills]);
 
   const handleKeyPress = (key: string) => {
     setErrorMsg(null);
@@ -35,6 +49,14 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
     if (key === "SPACE") {
       if (currentInput.trim() === "") return;
 
+      const isValidSkill = dictionary.some(
+        (skill) => skill.code === currentInput,
+      );
+      if (skillSuggestion && !isValidSkill) {
+        setCurrentInput(currentInput + skillSuggestion);
+        setSkillSuggestion("");
+        return;
+      }
       let finalDiff = 0;
 
       if (currentInput === "-") {
@@ -81,7 +103,19 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
         return [...prevSkills, ...copiesToAdd];
       });
     } else {
-      setCurrentInput((prev) => prev + key);
+      const newInput = currentInput + key;
+      setCurrentInput(newInput);
+
+      if (newInput.length > 0) {
+        const match = userSkillCodes.find((code) => code.startsWith(newInput));
+        if (match) {
+          const reminder = match.substring(newInput.length);
+          setSkillSuggestion(reminder);
+        }
+        else{
+          setSkillSuggestion("")
+        }
+      }
     }
   };
   const handleConfirmRound = (roundData: Partial<Round>) => {
@@ -166,11 +200,11 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
     if (rounds.length === 0) return;
     setIsFinishing(true);
   };
-  const handleSaveSession = async ()=> {
-    if(isSaving) return;
+  const handleSaveSession = async () => {
+    if (isSaving) return;
     setIsSaving(true);
     const result = await finishTrainingSession(rounds, rating, notes);
-    if(result.success){
+    if (result.success) {
       setIsSaving(false);
       setRounds([]);
       setCurrentInput("");
@@ -180,15 +214,13 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
         duration: 4000,
       });
       router.push("/dashboard");
-    }
-    else{
+    } else {
       setIsSaving(false);
       toast.error("Failed to save session", {
         duration: 4000,
       });
     }
-
-  }
+  };
 
   if (isFinishing) {
     return (
@@ -211,24 +243,31 @@ export default function LogClient({ dictionary }: { dictionary: DbSkill[] }) {
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <div className="gap-2">
           <h1 className="font-bold text-xl">New Training Session</h1>
-          <p className="text-xs text-muted-foreground">{new Date().toLocaleDateString()}</p>
+          <p className="text-xs text-muted-foreground">
+            {new Date().toLocaleDateString()}
+          </p>
         </div>
         <div className="flex flex-col gap-1.5">
           <p className="text-base font-semibold text-slate-700">
             Add Skill Code
           </p>
           <div className="flex gap-2">
-            <input
-              type="text"
-              inputMode="none"
-              readOnly={true}
-              value={currentInput}
-              placeholder="e.g. 41/ or 8-1/"
-              className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400"
-            />
+            <div className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl font-mono text-base flex items-center overflow-hidden">
+              {currentInput.length === 0 ? (
+                <span className="text-slate-400 text-sm">e.g. 41/ or 8-1/</span>
+              ) : (
+                <div className="whitespace-pre">
+                  <span className="text-slate-900">{currentInput}</span>
+                  <span className="text-slate-400 animate-pulse">
+                    {skillSuggestion}
+                  </span>
+                </div>
+              )}
+            </div>
+
             <button
               onClick={() => handleKeyPress("SPACE")}
-              className="w-10 h-10 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors"
+              className="w-10 h-10 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors shrink-0"
             >
               <Zap className="w-4 h-4 fill-white" />
             </button>

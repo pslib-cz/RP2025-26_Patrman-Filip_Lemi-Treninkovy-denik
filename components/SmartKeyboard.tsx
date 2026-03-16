@@ -62,8 +62,8 @@ function getVariantClasses(variant?: KeyType["variant"]) {
 
 function SmartKeyboard({ onKeyPress }: Props) {
   return (
-    <div className="w-full max-w-md mx-auto p-1.5 bg-slate-50 rounded-xl space-y-1.5">
-      <p className="text-xs font-semibold text-muted-foreground mb-2 font-sans px-1">
+    <div className="w-full max-w-md mx-auto bg-slate-50 rounded-xl space-y-1.5">
+      <p className="text-xs font-semibold text-muted-foreground mb-2 font-sans">
         SMART KEYBOARD
       </p>
 
