@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { Check, Clock, X } from "lucide-react";
 import { Skill, Round } from "@/types/training";
 import { useState } from "react";
 
@@ -97,7 +97,7 @@ export function CurrentRoundBoard({
           {isRoutine && (
             <div className="flex items-center justify-between text-slate-500 text-sm mt-2 pl-8">
               <div className="flex items-center gap-2">
-                <span className="text-xs">⏱️</span> Routine Height / Time (ToF):
+                <span className="text-xs"><Clock className="w-3 h-3"/></span> Routine Height / Time (ToF):
               </div>
               <input
                 type="number"

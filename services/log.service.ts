@@ -65,7 +65,9 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
     session_id: sessionData.id,
     fig_string: round.skills.map(s => s.fig_code).join(" "),
     difficulty: Number(round.total_difficulty.toFixed(2)),
-    tof: round.skills.length,
+    tof: round.tof,
+    is_routine: round.is_routine,
+    routine_type: round.routine_type,
   }));
   const routinesToInsert = rounds
   .filter(round => round.is_routine === true)

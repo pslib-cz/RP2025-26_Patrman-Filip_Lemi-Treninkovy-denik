@@ -1,4 +1,5 @@
 import { Round } from "@/types/training";
+import { Clock } from "lucide-react";
 
 export function SessionDetailRounds({ rounds }: { rounds: Round[] }) {
   if (rounds.length === 0) return null;
@@ -6,7 +7,7 @@ export function SessionDetailRounds({ rounds }: { rounds: Round[] }) {
   return (
     <div className="flex flex-col gap-3 mt-6">
       <h2 className="font-bold text-base text-slate-800">
-        Logged Rounds ({rounds.length})
+        Rounds
       </h2>
 
       <div className="flex flex-col gap-3">
@@ -24,11 +25,24 @@ export function SessionDetailRounds({ rounds }: { rounds: Round[] }) {
                 <span className="text-xs font-medium text-slate-500">
                   {round.skills.length} skills
                 </span>
-                <span className="bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                <span className="bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded-md">
                   DD: {round.total_difficulty.toFixed(1)}
                 </span>
               </div>
             </div>
+            
+            {round.is_routine && (
+              <div className="flex items-center gap-2 mt-1">
+                <span className="bg-primary text-white text-xs font-bold rounded-md px-2 py-0.5">
+                  {round.routine_type} Routine
+                </span>
+                {round.tof && (
+                  <span className="text-xs font-medium text-slate-500 flex items-center gap-1">
+                    <Clock className="w-3 h-3"/> {round.tof}s
+                  </span>
+                )}
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-1.5">
               {round.skills.map((skill) => (
@@ -42,14 +56,6 @@ export function SessionDetailRounds({ rounds }: { rounds: Round[] }) {
                 </span>
               ))}
             </div>
-            
-            {round.is_routine && (
-                <span className="text-xs font-medium text-slate-500">
-                    Routine Type: {round.routine_type}
-                    TOF: {round.tof}
-                    Difficulty: {round.total_difficulty}
-                </span>
-            )}
           </div>
         ))}
       </div>
