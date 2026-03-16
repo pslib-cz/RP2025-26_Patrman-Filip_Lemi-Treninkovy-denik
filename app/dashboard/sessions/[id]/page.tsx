@@ -1,9 +1,17 @@
 import { SessionDetailRounds } from "@/components/SessionDetailRounds";
 import { getSessionById } from "@/services/session.service";
 import { Round } from "@/types/training";
-import { Activity, AlignVerticalSpaceAround, ChevronLeft, RotateCcw, Star, Target } from "lucide-react";
+import {
+  Activity,
+  AlignVerticalSpaceAround,
+  ChevronLeft,
+  RotateCcw,
+  Star,
+  Target,
+} from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
+import SessionMetricsCard from "@/components/SessionMetricsCard";
 
 export default async function SessionByIdPage({
   params,
@@ -33,7 +41,7 @@ export default async function SessionByIdPage({
     };
   });
 
-    return (
+  return (
     <div className="min-h-screen bg-slate-50 pb-12">
       <div className="max-w-md mx-auto p-4 flex flex-col gap-6 pt-6">
         <div className="flex items-center gap-3">
@@ -44,9 +52,7 @@ export default async function SessionByIdPage({
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="font-bold text-xl text-slate-800">
-              Session Detail
-            </h1>
+            <h1 className="font-bold text-xl text-slate-800">Session Detail</h1>
             <p className="text-sm font-medium text-slate-500">
               {new Date(session.date).toLocaleDateString("en-US", {
                 weekday: "long",
@@ -58,50 +64,40 @@ export default async function SessionByIdPage({
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-1">
-            <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-              <Activity className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Difficulty</span>
-            </div>
-            <span className="text-2xl font-black text-primary">
-              {(session.total_difficulty ?? 0)}
-            </span>
-          </div>
+          <SessionMetricsCard
+            icon={<Activity className="w-4 h-4" />}
+            value={session.total_difficulty ?? 0}
+            label="Difficulty"
+            className="text-primary"
+          />
 
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-1">
-            <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-              <AlignVerticalSpaceAround className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Jumps</span>
-            </div>
-            <span className="text-2xl font-black text-slate-800">
-              {session.total_jumps}
-            </span>
-          </div>
+          <SessionMetricsCard
+            icon={<AlignVerticalSpaceAround className="w-4 h-4" />}
+            value={session.total_jumps || 0}
+            label="Jumps"
+            className="text-slate-800"
+          />
 
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-1">
-             <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-              <RotateCcw className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Rounds</span>
-            </div>
-            <span className="text-2xl font-black text-slate-800">
-              {session.total_rounds}
-            </span>
-          </div>
+          <SessionMetricsCard
+            icon={<RotateCcw className="w-4 h-4" />}
+            value={session.total_rounds || 0}
+            label="Rounds"
+            className="text-slate-800"
+          />
 
-           <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-1">
-            <div className="flex items-center gap-1.5 text-slate-500 mb-1">
-              <Target className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Routines</span>
-            </div>
-             <span className="text-2xl font-black text-slate-800">
-              {session.total_routines}
-            </span>
-          </div>
+          <SessionMetricsCard
+            icon={<Target className="w-4 h-4" />}
+            value={session.total_routines || 0}
+            label="Routines"
+            className="text-slate-800"
+          />
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-slate-600">Session Rating</span>
+            <span className="text-sm font-bold text-slate-600">
+              Session Rating
+            </span>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
@@ -115,10 +111,12 @@ export default async function SessionByIdPage({
               ))}
             </div>
           </div>
-          
+
           {session.notes && (
             <div className="mt-2 pt-3 border-t border-slate-100">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Notes</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                Notes
+              </span>
               <p className="text-sm text-slate-700 font-medium italic">
                 &quot;{session.notes}&quot;
               </p>
@@ -127,9 +125,7 @@ export default async function SessionByIdPage({
         </div>
 
         <SessionDetailRounds rounds={rounds} />
-        
       </div>
     </div>
   );
-
 }
