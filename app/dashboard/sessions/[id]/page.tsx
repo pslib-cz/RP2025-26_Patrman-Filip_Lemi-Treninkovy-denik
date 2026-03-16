@@ -1,5 +1,5 @@
 import { SessionDetailRounds } from "@/components/SessionDetailRounds";
-import { getSessionById } from "@/services/session.service";
+import { deleteSession, getSessionById } from "@/services/session.service";
 import { Round } from "@/types/training";
 import {
   Activity,
@@ -8,10 +8,12 @@ import {
   RotateCcw,
   Star,
   Target,
+  Trash2,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
 import SessionMetricsCard from "@/components/SessionMetricsCard";
+import { redirect } from "next/navigation";
 
 export default async function SessionByIdPage({
   params,
@@ -125,6 +127,22 @@ export default async function SessionByIdPage({
         </div>
 
         <SessionDetailRounds rounds={rounds} />
+        <form 
+          action={async () => {
+            "use server";
+            await deleteSession(session.id);
+            redirect("/dashboard/sessions");
+          }}
+        >
+          <button
+            type="submit"
+            className="w-full mt-4 bg-white border border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 transition-colors py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-sm"
+          >
+            <Trash2 className="w-5 h-5" />
+            Delete Session
+          </button>
+        </form>
+
       </div>
     </div>
   );

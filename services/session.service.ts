@@ -70,3 +70,19 @@ export async function getSessionById(id: string) {
     }
     return session
 }
+
+export async function deleteSession(id: string) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { error } = await supabase
+    .from("sessions")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id);
+    if(error){
+        console.error("Error deleting session:", error);
+        return { success: false, error: "Failed to delete session" };
+    }
+    return { success: true };
+}
