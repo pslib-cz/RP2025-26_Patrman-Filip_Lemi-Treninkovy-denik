@@ -127,7 +127,8 @@ export default async function SessionByIdPage({
         </div>
 
         <SessionDetailRounds rounds={rounds} />
-        <form 
+        <form
+        className="mt-16"
           action={async () => {
             "use server";
             await deleteSession(session.id);
