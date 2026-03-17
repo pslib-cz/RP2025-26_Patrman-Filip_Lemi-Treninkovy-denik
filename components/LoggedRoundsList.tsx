@@ -43,7 +43,7 @@ export function LoggedRoundsList({
                   {round.skills.length} skills
                 </span>
                 <span className="bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
-                  DD: {round.total_difficulty.toFixed(1)}
+                  Diff: {round.total_difficulty}
                 </span>
                 <button
                   onClick={() => onEditRound(round.id)}

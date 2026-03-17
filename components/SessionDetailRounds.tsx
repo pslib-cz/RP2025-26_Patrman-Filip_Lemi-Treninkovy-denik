@@ -26,7 +26,7 @@ export function SessionDetailRounds({ rounds }: { rounds: Round[] }) {
                   {round.skills.length} skills
                 </span>
                 <span className="bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded-md">
-                  DD: {round.total_difficulty.toFixed(1)}
+                  Diff: {round.total_difficulty.toFixed(1)}
                 </span>
               </div>
             </div>
