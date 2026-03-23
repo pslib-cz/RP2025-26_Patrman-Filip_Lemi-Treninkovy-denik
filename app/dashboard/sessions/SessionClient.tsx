@@ -4,13 +4,14 @@ import { SessionHistory } from "@/types/training";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import Filter from "@/components/Filter";
 
 interface Props {
   sessions: SessionHistory[];
 }
 
 export default function SessionClient({ sessions }: Props) {
-  const [searchQuerry, setSearchQuerry] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [displayCount, setDisplayCount] = useState(5);
   const [timeFilter, setTimeFilter] = useState("all");
 
@@ -41,14 +42,14 @@ export default function SessionClient({ sessions }: Props) {
     }).format(dateObj);
     const searchStringDate = `${dateObj.getDate()}.${dateObj.getMonth() + 1}.${dateObj.getFullYear()}`;
     const matchesDate =
-      searchStringDateEN.toLowerCase().includes(searchQuerry.toLowerCase()) ||
-      searchStringDate.includes(searchQuerry.toLowerCase());
+      searchStringDateEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      searchStringDate.includes(searchQuery.toLowerCase());
 
     const matchesNotes = sessions.notes
       ?.toLowerCase()
-      .includes(searchQuerry.toLowerCase());
+      .includes(searchQuery.toLowerCase());
     const matchesSkills = sessions.rounds.some((round) =>
-      round.fig_string.toLowerCase().includes(searchQuerry.toLowerCase()),
+      round.fig_string.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     return matchesDate || matchesNotes || matchesSkills;
@@ -59,36 +60,7 @@ export default function SessionClient({ sessions }: Props) {
       <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
         <h1 className="font-bold text-2xl">Training Sessions</h1>
         <div>
-          <div className="relative mb-6 flex gap-2">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <Search className="w-5 h-5 text-slate-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search skills or dates..."
-              value={searchQuerry}
-              onChange={(e) => {
-                setSearchQuerry(e.target.value);
-                setDisplayCount(5);
-              }}
-              className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 shadow-sm transition-all"
-            />
-            <div className="relative w-[52px] h-[50px] bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-center shrink-0">
-              <SlidersHorizontal
-                className={`w-5 h-5 ${timeFilter === "all" ? "text-slate-500" : "text-primary"}`}
-              />
-              <select
-                value={timeFilter}
-                onChange={(e) => setTimeFilter(e.target.value)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              >
-                <option value="all">All Time</option>
-                <option value="month">This Month</option>
-                <option value="3months">Last 3 Months</option>
-                <option value="year">This Year</option>
-              </select>
-            </div>
-          </div>
+          <Filter onSearchQuery={(search)=>{setSearchQuery(search); setDisplayCount(5)}} onTimeFilter={(time)=>{setDisplayCount(5); setTimeFilter(time)}} searchQuery={searchQuery} timeFilter={timeFilter} />
           <div className="flex flex-col gap-4 mt-6">
             {displayedSessions.map((rawSession) => {
               const dateObj = new Date(rawSession.date);
