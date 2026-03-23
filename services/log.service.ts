@@ -126,7 +126,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
 
   const { error: userSkillsError } = await supabase
     .from("user_skills")
-    .upsert(userSkillsToInsert);
+    .upsert(userSkillsToInsert, { onConflict: "user_id, skill_id" });
 
   if (userSkillsError) {
     console.error("Chyba při uložení skillů:", userSkillsError);
