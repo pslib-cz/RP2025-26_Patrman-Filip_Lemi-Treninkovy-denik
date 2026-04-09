@@ -120,3 +120,51 @@ export async function getRoutineSuccessRate(userId: string, timeFilter: string){
     return (successfulRoutines.length / routines.length) * 100;
 
 }
+
+export async function getFlipDirectionRatio(userId: string, timeFilter: string) {
+    const supabase = await createClient();
+    const now = new Date();
+    let startDate: Date | null = null;
+
+    if (timeFilter === "month") {
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+    } else if (timeFilter === "year") {
+        startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+    }
+
+    const { data: dict } = await supabase.from('skills').select('code, direction');
+    const directionMap = Object.fromEntries((dict || []).map(s => [s.code, s.direction]));
+    
+    let query = supabase
+    .from('rounds')
+    .select('fig_string, sessions!inner(user_id, date)')
+    .eq('sessions.user_id', userId);
+
+if (startDate) {
+    query = query.gte('sessions.date', startDate.toISOString());
+}
+
+    const { data: roundsErrorFree } = await query;
+    const rounds = roundsErrorFree || [];
+    
+    let front = 0;
+    let back = 0;
+    
+    rounds.forEach(round => {
+        const jumpCodes = round.fig_string.split(" ");
+        jumpCodes.forEach(code => {
+             const direction = directionMap[code];
+             
+             if (direction === 'F') front++;
+             else if (direction === 'B') back++;
+        });
+    });
+    
+    const total = front + back;
+    if (total === 0) return { frontRatio: 0, backRatio: 0 };
+    
+    return { 
+         frontRatio: (front / total) * 100, 
+         backRatio: (back / total) * 100 
+    };
+}

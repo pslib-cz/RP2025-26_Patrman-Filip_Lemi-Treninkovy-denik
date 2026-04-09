@@ -1,3 +1,4 @@
+import StatsDirectionCard from "@/components/StatsDirectionCard";
 import StatsOverview from "@/components/StatsOverview";
 import StatsRating from "@/components/StatsRating";
 import RoutineSuccessCard from "@/components/StatsRoutineSuccess";
@@ -27,7 +28,10 @@ export default async function StatsPage({ searchParams }: Props) {
         <Suspense fallback={<p>Loading rounds count...</p>}>
           <StatsOverview filter={timeFilter} userId={user.id} />
           <StatsRating filter={timeFilter} userId={user.id} />
-          <RoutineSuccessCard filter={timeFilter} userId={user.id} />
+          <div className="grid grid-cols-2 gap-4">
+            <RoutineSuccessCard filter={timeFilter} userId={user.id} />
+            <StatsDirectionCard filter={timeFilter} userId={user.id} />
+          </div>
         </Suspense>
       </div>
     </div>

@@ -15,12 +15,12 @@ export default async function RoutineSuccessCard({ filter, userId }: Props) {
   ].filter((item) => item.value > 0);
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl bg-card p-6 shadow-sm border border-border">
-      <h3 className="text-sm font-bold text-muted-foreground uppercase mb-2">
+    <div className="flex flex-col items-center h-full rounded-2xl bg-card p-6 shadow-sm border border-border">
+      <h3 className="text-sm font-bold text-muted-foreground uppercase mb-2 text-center min-h-[48px] flex justify-center">
         Routine Success Rate
       </h3>
       
-      <div className="relative w-full flex items-center justify-center mt-2">
+      <div className="relative w-full flex items-center justify-center">
          
          <StatsPieChart data={chartData} />
          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
