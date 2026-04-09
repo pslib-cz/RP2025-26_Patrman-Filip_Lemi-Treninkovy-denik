@@ -10,14 +10,14 @@ export default async function RoutineSuccessCard({ filter, userId }: Props) {
   const rate = await getRoutineSuccessRate(userId, filter);
   
   const chartData = [
-    { name: "Úspěch", value: rate, color: "fill-primary" },
-    { name: "Nedojeto", value: 100 - rate, color: "fill-slate-100" }       
+    { name: "Success", value: rate, color: "fill-primary" },
+    { name: "Incomplete", value: 100 - rate, color: "fill-slate-100" }       
   ].filter((item) => item.value > 0);
 
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl bg-card p-6 shadow-sm border border-border">
       <h3 className="text-sm font-bold text-muted-foreground uppercase mb-2">
-        Úspěšnost sestav
+        Routine Success Rate
       </h3>
       
       <div className="relative w-full flex items-center justify-center mt-2">

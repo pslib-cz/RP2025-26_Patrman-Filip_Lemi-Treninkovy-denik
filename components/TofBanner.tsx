@@ -23,7 +23,7 @@ export function TofBanner({ tofValue, setTofValue, onSave, onClose }: Props) {
             Max Performance: Time for 10 Jumps
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            Enter your 10-jump max time (Maximálky) in seconds.
+            Enter your 10-jump max time (Max times) in seconds.
           </p>
         </div>
       </div>

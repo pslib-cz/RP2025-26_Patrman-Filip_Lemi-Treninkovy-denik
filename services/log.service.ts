@@ -58,7 +58,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
     .single();
 
   if (sessionError || !sessionData) {
-    console.error("Chyba při uložení session:", sessionError);
+    console.error("Error saving session:", sessionError);
     return { success: false, error: "Failed to create session" };
   }
 
@@ -108,7 +108,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
     .insert(routinesToInsert);
   
     if (routinesError) {
-      console.error("Chyba při uložení rutin:", routinesError);
+      console.error("Error saving routines:", routinesError);
       return { success: false, error: "Failed to save routines" };
     }
   }
@@ -119,7 +119,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
     .insert(tenJumpsTimesToInsert);
 
     if (ten_jump_timesError) {
-      console.error("Chyba při uložení 10ti skoků:", ten_jump_timesError);
+      console.error("Error saving 10 jumps:", ten_jump_timesError);
       return { success: false, error: "Failed to save 10 jumps" };
     }
   }
@@ -129,7 +129,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
     .upsert(userSkillsToInsert, { onConflict: "user_id, skill_id" });
 
   if (userSkillsError) {
-    console.error("Chyba při uložení skillů:", userSkillsError);
+    console.error("Error saving skills:", userSkillsError);
     return { success: false, error: "Failed to save skills" }; 
   }
 
@@ -138,7 +138,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
     .insert(roundsToInsert);
 
   if (roundsError) {
-    console.error("Chyba při uložení kol:", roundsError);
+    console.error("Error saving rounds:", roundsError);
     return { success: false, error: "Failed to save rounds" };
   }
 

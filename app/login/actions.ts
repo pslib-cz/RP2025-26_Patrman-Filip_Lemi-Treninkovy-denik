@@ -15,7 +15,7 @@ export async function login(
   const password = formData.get("password") as string;
 
   if (!email || !password) {
-    return { error: "Vyplňte jméno a heslo" };
+    return { error: "Fill in email and password" };
   }
 
   const supabase = await createClient();
@@ -35,7 +35,7 @@ export async function signUp(prevState: AuthState | null, formData: FormData): P
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     if (!email || !password) {
-        return { error: "Vyplňte jméno a heslo" };
+        return { error: "Fill in email and password" };
     }
 
     const supabase = await createClient();
@@ -73,14 +73,14 @@ export async function updateProfile(prevState: AuthState | null, formData: FormD
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser(); 
   
-  if (!user) return { error: "Security hlásí: Unauthorized" };
+  if (!user) return { error: "Security check failed: Unauthorized" };
 
   const username = formData.get("username") as string;
   const gender = formData.get("gender") as string;
   const age = formData.get("age") as string;
   const full_name = formData.get("full_name") as string;
   
-  if (!username) return { error: "Uživatelské jméno je povinné pro pokračování." };
+  if (!username) return { error: "Username is required to continue." };
 
   const { error } = await supabase
     .from('profiles')

@@ -14,7 +14,7 @@ export default async function StatsRating({ filter, userId }: Props) {
   return (
     <div className="flex flex-col justify-center rounded-2xl bg-card p-6 shadow-sm border border-border">
       <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">
-        Průměrné hodnocení tréninku
+        Average Training Rating
       </h3>
 
       <div className="flex items-center gap-3">

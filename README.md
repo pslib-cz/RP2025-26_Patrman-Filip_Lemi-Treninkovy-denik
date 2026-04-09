@@ -1,7 +1,7 @@
-# Lemi - Tréninkový deník
+# Lemi - Training Diary
 
-Tento projekt je webová aplikace pro zapisování trampolínových tréninků, vytvořená v rámci ročníkové práce.
+This project is a web application for logging trampoline training sessions, created as part of a school project.
 
-## Odkaz
-Aplikace je dostupná na Vercelu:  
-👉 [Otevřít aplikaci](https://rp-2025-26-patrman-filip-lemi-treni.vercel.app/)
+## Link
+The application is available on Vercel:  
+👉 [Open the application](https://rp-2025-26-patrman-filip-lemi-treni.vercel.app/)

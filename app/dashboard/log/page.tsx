@@ -13,7 +13,7 @@ export default async function LogPage() {
   ])
   
   if (skillsResponse.error || userSkillsResponse.error) {
-    console.error("Nepodařilo se načíst slovník skillů:", skillsResponse.error?.message);
+    console.error("Failed to load skills dictionary:", skillsResponse.error?.message);
     return;
   }
   return <LogClient dictionary={skillsResponse.data || []} userSkills={userSkillsResponse.data || []} />;

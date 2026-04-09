@@ -24,7 +24,7 @@ export default async function StatsPage({ searchParams }: Props) {
       <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
         <h1 className="font-bold text-2xl">My Progress</h1>
         <StatsTimeFilter />
-        <Suspense fallback={<p>Načítám počet kol...</p>}>
+        <Suspense fallback={<p>Loading rounds count...</p>}>
           <StatsOverview filter={timeFilter} userId={user.id} />
           <StatsRating filter={timeFilter} userId={user.id} />
           <RoutineSuccessCard filter={timeFilter} userId={user.id} />

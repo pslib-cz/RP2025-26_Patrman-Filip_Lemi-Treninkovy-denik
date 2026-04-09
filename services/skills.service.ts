@@ -13,7 +13,7 @@ export async function getSkills() {
     ])
       
     if (skills.error || userSkills.error) {
-        console.error("Nepodařilo se načíst slovník skillů:", skills.error?.message);
+        console.error("Failed to load skills dictionary:", skills.error?.message);
         return [];
     }
 
@@ -47,7 +47,7 @@ export async function updateSkillStatus(skillId: string, status: "not_started" |
         date_mastered: status === "mastered" ? new Date().toISOString() : null
     }, { onConflict: "user_id, skill_id"})
     if (error) {
-        console.error("Nepodařilo se aktualizovat status skillu:", error.message);
+        console.error("Failed to update skill status:", error.message);
         return { success: false, error: error.message };
     }
     return { success: true };

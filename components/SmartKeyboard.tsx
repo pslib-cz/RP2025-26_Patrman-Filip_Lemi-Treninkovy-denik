@@ -4,12 +4,12 @@ interface Props {
   onKeyPress: (key: string) => void;
 }
 
-// Definice typu pro TypeScript, abychom měli kontrolu
+// TypeScript type definition for type safety
 type KeyType = {
   label: React.ReactNode;
   value: string;
-  colSpan?: number; // Kolik sloupců zabere v Gridu (defaultně třeba 2, protože 5 tlačítek na řádek v gridu 10)
-  variant?: "default" | "space" | "delete" | "action"; // Barvičky
+  colSpan?: number; // Grid column span (default is e.g. 2, since 5 buttons per row in a 10 col grid)
+  variant?: "default" | "space" | "delete" | "action"; // Color variants
 };
 
 const KEYBOARD_ROWS: KeyType[][] = [
