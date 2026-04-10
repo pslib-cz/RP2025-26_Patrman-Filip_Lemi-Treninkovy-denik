@@ -16,8 +16,8 @@ export default async function StatsDirectionCard({ filter, userId }: Props) {
   ].filter(item => item.value > 0);
 
   return (
-    <div className="flex flex-col items-center rounded-2xl bg-card p-6 shadow-sm border border-border h-full">
-      <h3 className="text-sm font-bold text-muted-foreground uppercase mb-2 text-center min-h-[48px] flex justify-center">
+    <div className="flex flex-col rounded-2xl bg-card p-6 shadow-sm border border-border h-full">
+      <h3 className="text-black font-bold mb-2">
         Flip Direction
       </h3>
       
@@ -32,12 +32,12 @@ export default async function StatsDirectionCard({ filter, userId }: Props) {
 
       <div className="w-full flex flex-col gap-2 px-2">
          <div className="flex justify-between items-center w-full">
-            <span className="font-bold text-primary">Front</span>
-            <span className="font-bold text-slate-800">{Math.round(frontRatio)}%</span>
+            <span className="text-muted-foreground text-sm">Front</span>
+            <span className="text-muted-foreground text-sm">{Math.round(frontRatio)}%</span>
          </div>
          <div className="flex justify-between items-center w-full">
-            <span className="font-bold text-secondary">Back</span> 
-            <span className="font-bold text-slate-800">{Math.round(backRatio)}%</span>
+            <span className="text-muted-foreground text-sm">Back</span> 
+            <span className="text-muted-foreground text-sm">{Math.round(backRatio)}%</span>
          </div>
       </div>
 

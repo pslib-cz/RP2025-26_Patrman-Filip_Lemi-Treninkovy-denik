@@ -1,8 +1,10 @@
 import StatsDirectionCard from "@/components/StatsDirectionCard";
+import StatsFrequentSkills from "@/components/StatsFrequentSkills";
 import StatsOverview from "@/components/StatsOverview";
 import StatsRating from "@/components/StatsRating";
 import RoutineSuccessCard from "@/components/StatsRoutineSuccess";
 import StatsTimeFilter from "@/components/StatsTimeFilter";
+import { getFrequentSkills } from "@/services/stats.service";
 import { createClient } from "@/utils/supabase/server";
 import { Suspense } from "react";
 
@@ -19,7 +21,7 @@ export default async function StatsPage({ searchParams }: Props) {
   } = await supabase.auth.getUser();
   if (!user) return;
   const timeFilter = (await searchParams).time || "all";
-
+  
   return (
     <div className="pb-14 min-h-screen bg-slate-50/50">
       <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
@@ -31,6 +33,7 @@ export default async function StatsPage({ searchParams }: Props) {
           <div className="grid grid-cols-2 gap-4">
             <RoutineSuccessCard filter={timeFilter} userId={user.id} />
             <StatsDirectionCard filter={timeFilter} userId={user.id} />
+            <StatsFrequentSkills filter={timeFilter} userId={user.id} />
           </div>
         </Suspense>
       </div>

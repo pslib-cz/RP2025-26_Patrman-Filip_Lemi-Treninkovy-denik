@@ -168,3 +168,56 @@ if (startDate) {
          backRatio: (back / total) * 100 
     };
 }
+
+export async function getFrequentSkills(userId: string, timeFilter: string) {
+    const supabase = await createClient();
+    const now = new Date();
+    let startDate: Date | null = null;
+
+    if (timeFilter === "month") {
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+    } else if (timeFilter === "year") {
+        startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+    }
+
+    const { data: dict } = await supabase
+    .from('user_skills')
+    .select('skills!inner(code, name)')
+    .eq('user_id', userId)
+    .eq('status', 'mastered');
+
+    const nameMap = Object.fromEntries((dict || []).map(s => [s.skills.code, s.skills.name]));
+
+    let query = supabase
+        .from('rounds')
+        .select('fig_string, sessions!inner(user_id, date)')
+        .eq('sessions.user_id', userId);
+
+    if (startDate) {
+        query = query.gte('sessions.date', startDate.toISOString());
+    }
+
+    const { data: roundsErrorFree } = await query;
+    const rounds = roundsErrorFree || [];
+
+    const counts: Record<string, number> = {};
+
+    rounds.forEach(round => {
+        const jumpCodes = round.fig_string.split(" ");
+        jumpCodes.forEach(code => {
+            if (!nameMap[code]) return;
+            
+            counts[code] = (counts[code] || 0) + 1;
+        });
+    });
+
+    const sortedSkills = Object.entries(counts)
+        .map(([code, count]) => ({
+            code,
+            name: nameMap[code], 
+            count
+        }))
+        .sort((a, b) => b.count - a.count);
+
+    return sortedSkills;
+}
