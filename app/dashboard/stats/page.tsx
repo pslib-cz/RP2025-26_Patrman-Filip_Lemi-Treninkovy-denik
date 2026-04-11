@@ -35,7 +35,7 @@ export default async function StatsPage({ searchParams }: Props) {
             <StatsDirectionCard filter={timeFilter} userId={user.id} />
             <StatsFrequentSkills filter={timeFilter} userId={user.id} />
           </div>
-          <StatsTof userId={user.id} />
+          <StatsTof filter={timeFilter} userId={user.id} />
         </Suspense>
       </div>
     </div>

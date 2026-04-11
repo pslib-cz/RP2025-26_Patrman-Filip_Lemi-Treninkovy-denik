@@ -243,7 +243,7 @@ export default function LogClient({ dictionary, userSkills }: Props) {
     <div className="min-h-screen pb-12">
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <div className="gap-2">
-          <h1 className="font-bold text-xl">New Training Session</h1>
+          <h1 className="font-bold text-2xl">New Training Session</h1>
           <p className="text-xs text-muted-foreground">
             {new Date().toLocaleDateString()}
           </p>

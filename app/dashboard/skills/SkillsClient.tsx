@@ -28,6 +28,7 @@ export default function SkillsClient({ skills }: Props) {
   return (
     <div className="min-h-screen pb-12 bg-slate-50/50">
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
+        <h1 className="font-bold text-2xl">Skills</h1>
         <Filter
           onTimeFilter={(seacrh) => {
             setTimeFilter(seacrh);
