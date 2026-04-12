@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import { ProfileForm } from "./ProfileForm"; 
+import { ProfileData, ProfileForm } from "./ProfileForm"; 
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -20,7 +20,7 @@ export default async function ProfilePage() {
 
       <div className="bg-white flex flex-col rounded-2xl shadow-sm border border-slate-100 p-5 mt-2">
           <h2 className="text-black font-bold mb-5">Personal Information</h2>
-          <ProfileForm initialData={profile} userId={user?.id} />
+          <ProfileForm initialData={profile as ProfileData} userId={user?.id} />
       </div>
     </div>
   );
