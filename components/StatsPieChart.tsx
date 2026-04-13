@@ -8,8 +8,8 @@ interface Props {
 
 export default function StatsPieChart({ data }: Props) {
     return (
-        <ResponsiveContainer width="100%" height={200}>
-            <PieChart >
+        <ResponsiveContainer width="100%" height={200} >
+            <PieChart style={{ userSelect: "none", WebkitTapHighlightColor: "transparent" }} >
                 <Pie
                     data={data}
                     cx="50%"

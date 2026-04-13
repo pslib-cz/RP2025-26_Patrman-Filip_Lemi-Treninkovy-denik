@@ -35,3 +35,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+.recharts-surface:focus,
+.recharts-wrapper:focus,
+.recharts-layer:focus {
+  outline: none;
+}
