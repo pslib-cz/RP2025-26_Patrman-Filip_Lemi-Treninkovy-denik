@@ -67,6 +67,11 @@ export function ProfileForm({ initialData, userId }: Props) {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 1024 * 1024 * 5) {
+      toast.error("File is too large. Maximum size is 5MB.");
+      e.target.value = "";
+      return;
+    }
 
     const toastId = toast.loading("Uploading..");
     const supabase = createClient();
