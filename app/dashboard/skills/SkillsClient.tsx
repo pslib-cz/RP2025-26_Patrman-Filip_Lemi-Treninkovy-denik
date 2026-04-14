@@ -12,6 +12,7 @@ export default function SkillsClient({ skills }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [displayCount, setDisplayCount] = useState(5);
   const [timeFilter, setTimeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const statusPriority = {
     mastered: 1,
     learning: 2,
@@ -30,8 +31,12 @@ export default function SkillsClient({ skills }: Props) {
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <h1 className="font-bold text-2xl text-foreground">Skills</h1>
         <Filter
-          onTimeFilter={(seacrh) => {
-            setTimeFilter(seacrh);
+          onTimeFilter={(search) => {
+            setTimeFilter(search);
+            setDisplayCount(5);
+          }}
+          onStatusFilter={(status) => {
+            setStatusFilter(status);
             setDisplayCount(5);
           }}
           onSearchQuery={(search) => {
@@ -40,11 +45,13 @@ export default function SkillsClient({ skills }: Props) {
           }}
           searchQuery={searchQuery}
           timeFilter={timeFilter}
+          statusFilter={statusFilter}
         />
         <div className="flex flex-col gap-2">
           {[...skills]
             .filter((skill) => checkSkillSearchMatch(skill, lowerQuery, dateFormatter))
             .filter((skill) => checkTimeFilter(skill, timeFilter, now))
+            .filter((skill) => statusFilter === "all" || skill.status === statusFilter)
             .sort((a, b) => statusPriority[a.status] - statusPriority[b.status])
             .map((skill) => (
               <SkillsCard key={skill.id} skill={skill} />
