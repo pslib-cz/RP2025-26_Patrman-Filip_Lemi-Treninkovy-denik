@@ -54,15 +54,15 @@ function getVariantClasses(variant?: KeyType["variant"]) {
     case "delete":
       return "bg-destructive text-white flex-1";
     case "action":
-      return "bg-white text-primary font-bold";
+      return "bg-card text-primary font-bold hover:bg-muted";
     default:
-      return "bg-white text-foreground hover:bg-slate-50";
+      return "bg-card text-foreground hover:bg-muted";
   }
 }
 
 function SmartKeyboard({ onKeyPress }: Props) {
   return (
-    <div className="w-full max-w-md mx-auto bg-slate-50 rounded-xl space-y-1.5">
+    <div className="w-full max-w-md mx-auto bg-background rounded-xl space-y-1.5">
       <p className="text-xs font-semibold text-muted-foreground mb-2 font-sans">
         SMART KEYBOARD
       </p>

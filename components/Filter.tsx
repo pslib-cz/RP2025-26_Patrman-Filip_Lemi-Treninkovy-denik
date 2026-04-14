@@ -12,7 +12,7 @@ export default function Filter({searchQuery, timeFilter, onTimeFilter, onSearchQ
     return(
         <div className="relative mb-6 flex gap-2">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <Search className="w-5 h-5 text-slate-400" />
+              <Search className="w-5 h-5 text-muted-foreground" />
             </div>
             <input
               type="text"
@@ -21,11 +21,11 @@ export default function Filter({searchQuery, timeFilter, onTimeFilter, onSearchQ
               onChange={(e) => {
                 onSearchQuery(e.target.value);
               }}
-              className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 shadow-sm transition-all"
+              className="w-full bg-card border border-border rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-muted-foreground shadow-sm transition-all text-foreground"
             />
-            <div className="relative w-[52px] h-[50px] bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-center shrink-0">
+            <div className="relative w-[52px] h-[50px] bg-card border border-border rounded-xl shadow-sm flex items-center justify-center shrink-0">
               <SlidersHorizontal
-                className={`w-5 h-5 ${timeFilter === "all" ? "text-slate-500" : "text-primary"}`}
+                className={`w-5 h-5 ${timeFilter === "all" ? "text-muted-foreground" : "text-primary"}`}
               />
               <select
                 value={timeFilter}

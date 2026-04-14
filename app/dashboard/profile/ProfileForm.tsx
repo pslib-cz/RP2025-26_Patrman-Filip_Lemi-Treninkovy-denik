@@ -112,7 +112,7 @@ export function ProfileForm({ initialData, userId }: Props) {
             )}
           </div>
           <div className="overflow-hidden flex-1">
-            <h3 className="text-xl font-bold text-black">
+            <h3 className="text-xl font-bold text-foreground">
               {currentData.username}
             </h3>
             <p className="text-sm text-muted-foreground">
@@ -121,30 +121,30 @@ export function ProfileForm({ initialData, userId }: Props) {
           </div>
           <button
             onClick={() => setIsEditing(true)}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-95 transition-transform"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-muted/80 active:scale-95 transition-transform"
           >
             <Edit2 className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="flex flex-col gap-3 rounded-2xl bg-slate-50 p-4 border border-slate-100">
-          <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+        <div className="flex flex-col gap-3 rounded-2xl bg-muted/30 p-4 border border-border">
+          <div className="flex justify-between items-center border-b border-border pb-3">
             <p className="text-sm font-bold text-muted-foreground">Age</p>
-            <p className="font-bold text-black">{currentData.age}</p>
+            <p className="font-bold text-foreground">{currentData.age}</p>
           </div>
           <div className="flex justify-between items-center pt-1">
             <p className="text-sm font-bold text-muted-foreground">Gender</p>
-            <p className="font-bold text-black capitalize">
+            <p className="font-bold text-foreground capitalize">
               {currentData.gender}
             </p>
           </div>
           <div className="flex justify-between items-center pt-1">
             <p className="text-sm font-bold text-muted-foreground">Weight</p>
-            <p className="font-bold text-black">{currentData.weight}</p>
+            <p className="font-bold text-foreground">{currentData.weight}</p>
           </div>
           <div className="flex justify-between items-center pt-1">
             <p className="text-sm font-bold text-muted-foreground">Height</p>
-            <p className="font-bold text-black">{currentData.height}</p>
+            <p className="font-bold text-foreground">{currentData.height}</p>
           </div>
         </div>
       </div>
@@ -189,7 +189,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         </label>
         <input
           {...register("username", { required: true })}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+          className="w-full rounded-xl border border-border bg-muted/30 p-3.5 text-sm font-medium text-foreground focus:border-primary focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
         />
         {errors.username && (
           <p className="text-xs text-red-500">{errors.username.message}</p>
@@ -202,7 +202,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         </label>
         <input
           {...register("full_name")}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+          className="w-full rounded-xl border border-border bg-muted/30 p-3.5 text-sm font-medium text-foreground focus:border-primary focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
         />
         {errors.full_name && (
           <p className="text-xs text-red-500">{errors.full_name.message}</p>
@@ -216,7 +216,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         <input
           type="number"
           {...register("age", { valueAsNumber: true })}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+          className="w-full rounded-xl border border-border bg-muted/30 p-3.5 text-sm font-medium text-foreground focus:border-primary focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
         />
         {errors.age && (
           <p className="text-xs text-red-500">{errors.age.message}</p>
@@ -229,7 +229,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         </label>
         <select
           {...register("gender")}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors appearance-none"
+          className="w-full rounded-xl border border-border bg-muted/30 p-3.5 text-sm font-medium text-foreground focus:border-primary focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors appearance-none"
         >
           <option value="">Select...</option>
           <option value="male">Male</option>
@@ -248,7 +248,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         <input
           type="number"
           {...register("weight", { valueAsNumber: true })}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+          className="w-full rounded-xl border border-border bg-muted/30 p-3.5 text-sm font-medium text-foreground focus:border-primary focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
         />
         {errors.weight && (
           <p className="text-xs text-red-500">{errors.weight.message}</p>
@@ -262,7 +262,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         <input
           type="number"
           {...register("height", { valueAsNumber: true })}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+          className="w-full rounded-xl border border-border bg-muted/30 p-3.5 text-sm font-medium text-foreground focus:border-primary focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
         />
         {errors.height && (
           <p className="text-xs text-red-500">{errors.height.message}</p>
@@ -273,7 +273,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         <button
           type="button"
           onClick={() => setIsEditing(false)}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-transparent p-3.5 text-sm font-bold text-slate-500 hover:bg-slate-50 active:scale-95 transition-all"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-border bg-transparent p-3.5 text-sm font-bold text-muted-foreground hover:bg-muted/50 active:scale-95 transition-all"
         >
           <X className="h-5 w-5" /> Cancel
         </button>

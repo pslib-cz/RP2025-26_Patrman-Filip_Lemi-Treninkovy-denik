@@ -1,32 +1,50 @@
 @import "tailwindcss";
 
-:root {
-  --background: oklch(0.98 0.002 250);
-  --foreground: oklch(0.18 0.02 250);
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
   --color-primary: #f28200;
   --color-primary-foreground: #ffffff;
   --color-secondary: #0f3d6e;
   --color-secondary-foreground: #ffffff;
-  --color-muted: #f1f4f5;
-  --color-muted-foreground: #64748b;
-  --color-border: #e2e8f0;
-  --color-accent: #fff7ed;
-  --color-accent-foreground: #005a82;
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-input: var(--border);
+  --color-ring: var(--primary);
   --color-destructive: #cc2b1d;
   --radius-md: 0.75rem;
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 }
 
+:root {
+  --background: oklch(0.98 0.002 250);
+  --foreground: oklch(0.18 0.02 250);
+  --card: #ffffff;
+  --card-foreground: oklch(0.18 0.02 250);
+  --muted: oklch(0.96 0.01 250);
+  --muted-foreground: oklch(0.45 0.02 250);
+  --border: oklch(0.91 0.01 250);
+  --accent: oklch(0.97 0.01 50);
+  --accent-foreground: oklch(0.2 0.05 50);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: oklch(0.15 0.01 250); /* Deep midnight background */
+    --foreground: oklch(0.92 0.01 250);
+    --card: oklch(0.21 0.01 250);       /* Slightly lighter surface for cards */
+    --card-foreground: oklch(0.92 0.01 250);
+    --muted: oklch(0.25 0.02 250);
+    --muted-foreground: oklch(0.65 0.02 250);
+    --border: oklch(0.32 0.02 250);
+    --accent: oklch(0.28 0.05 250);
+    --accent-foreground: oklch(0.92 0.01 250);
   }
 }
 
@@ -34,6 +52,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .recharts-surface:focus,

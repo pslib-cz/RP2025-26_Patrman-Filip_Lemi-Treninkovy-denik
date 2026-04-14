@@ -2,7 +2,7 @@ export default function StatCard({
   icon,
   value,
   label,
-  className = "rounded-xl border border-slate-100",
+  className = "rounded-xl border border-border",
   iconBgClass = "bg-accent",
 }: {
   icon: React.ReactNode;
@@ -13,10 +13,10 @@ export default function StatCard({
 }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center bg-white p-3 shadow-sm ${className}`}
+      className={`flex flex-col items-center justify-center bg-card p-3 shadow-sm ${className}`}
     >
       <div className={`mb-1.5 rounded-full p-1.5 ${iconBgClass}`}>{icon}</div>
-      <span className="text-lg font-bold">{value}</span>
+      <span className="text-lg font-bold text-foreground">{value}</span>
       <span className="text-[9px] text-muted-foreground uppercase mt-0.5 text-center">
         {label}
       </span>

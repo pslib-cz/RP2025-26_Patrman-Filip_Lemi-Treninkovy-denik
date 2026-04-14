@@ -225,7 +225,7 @@ export default function LogClient({ dictionary, userSkills }: Props) {
 
   if (isFinishing) {
     return (
-      <div className="min-h-screen bg-slate-50/50">
+      <div className="min-h-screen bg-background">
         <FinishSessionScreen
           rating={rating}
           setRating={setRating}
@@ -243,23 +243,23 @@ export default function LogClient({ dictionary, userSkills }: Props) {
     <div className="min-h-screen pb-12">
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <div className="gap-2">
-          <h1 className="font-bold text-2xl">New Training Session</h1>
+          <h1 className="font-bold text-2xl text-foreground">New Training Session</h1>
           <p className="text-xs text-muted-foreground">
             {new Date().toLocaleDateString()}
           </p>
         </div>
         <div className="flex flex-col gap-1.5">
-          <p className="text-base font-semibold text-slate-700">
+          <p className="text-base font-bold text-foreground">
             Add Skill Code
           </p>
           <div className="flex gap-2">
-            <div className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl font-mono text-base flex items-center overflow-hidden">
+            <div className="flex-1 px-3 py-2 bg-card border border-border rounded-xl font-mono text-base flex items-center overflow-hidden">
               {currentInput.length === 0 ? (
-                <span className="text-slate-400 text-sm">e.g. 41/ or 8-1/</span>
+                <span className="text-muted-foreground text-sm">e.g. 41/ or 8-1/</span>
               ) : (
                 <div className="whitespace-pre">
-                  <span className="text-slate-900">{currentInput}</span>
-                  <span className="text-slate-400 animate-pulse">
+                  <span className="text-foreground">{currentInput}</span>
+                  <span className="text-muted-foreground animate-pulse">
                     {skillSuggestion}
                   </span>
                 </div>

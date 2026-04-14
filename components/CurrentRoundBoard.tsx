@@ -35,7 +35,7 @@ export function CurrentRoundBoard({
   if (skills.length === 0) return null;
 
   return (
-    <div className="border border-orange-200 border-dashed rounded-xl p-3 flex flex-col gap-3 bg-orange-50/50">
+    <div className="border border-primary/30 border-dashed rounded-xl p-3 flex flex-col gap-3 bg-primary/5">
       <div className="flex justify-between items-center">
         <p className="font-semibold text-[10px] text-muted-foreground uppercase tracking-widest">
           Current round ({skills.length} skills)
@@ -50,7 +50,7 @@ export function CurrentRoundBoard({
         {skills.map((skill) => (
           <div
             key={skill.id}
-            className="group flex items-center gap-1.5 bg-white/80 border border-slate-200 text-slate-700 font-mono text-xs shadow-sm font-medium rounded-full pl-2.5 pr-1.5 py-1"
+            className="group flex items-center gap-1.5 bg-card border border-border text-foreground font-mono text-xs shadow-sm font-medium rounded-full pl-2.5 pr-1.5 py-1"
           >
             <span>
               {skill.fig_code === "-" && skill.tof !== undefined
@@ -59,7 +59,7 @@ export function CurrentRoundBoard({
             </span>
             <button
               onClick={() => onRemoveSkill(skill.id)}
-              className="text-slate-400 hover:text-red-500 rounded-full hover:bg-red-50 p-0.5 transition-colors"
+              className="text-muted-foreground hover:text-destructive rounded-full hover:bg-destructive/10 p-0.5 transition-colors"
             >
               <X className="w-3 h-3" />
             </button>
@@ -67,27 +67,27 @@ export function CurrentRoundBoard({
         ))}
       </div>
       
-        <div className="bg-white rounded-xl p-3 flex flex-col gap-2 border border-slate-100 mt-1 self-end">
+        <div className="bg-card rounded-xl p-3 flex flex-col gap-2 border border-border mt-1 self-end">
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               checked={isRoutine}
               onChange={(e) => setIsRoutine(e.target.checked)}
-              className="w-5 h-5 rounded border-slate-300 text-orange-500 focus:ring-orange-500"
+              className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
             />
-            <span className="font-bold text-slate-800">Mark as Routine</span>
+            <span className="font-bold text-foreground">Mark as Routine</span>
 
             {isRoutine && (
-              <div className="flex bg-slate-100 rounded-lg p-1 ml-auto">
+              <div className="flex bg-muted rounded-lg p-1 ml-auto">
                 <button
                   onClick={() => setRoutineType("VS")}
-                  className={`px-3 py-1 text-sm font-bold rounded-md ${routineType === "VS" ? "bg-orange-500 text-white" : "text-slate-500"}`}
+                  className={`px-3 py-1 text-sm font-bold rounded-md ${routineType === "VS" ? "bg-primary text-white" : "text-muted-foreground"}`}
                 >
                   VS
                 </button>
                 <button
                   onClick={() => setRoutineType("PS")}
-                  className={`px-3 py-1 text-sm font-bold rounded-md ${routineType === "PS" ? "bg-slate-300 text-white" : "text-slate-500"}`}
+                  className={`px-3 py-1 text-sm font-bold rounded-md ${routineType === "PS" ? "bg-muted-foreground text-card" : "text-muted-foreground"}`}
                 >
                   PS
                 </button>
@@ -95,7 +95,7 @@ export function CurrentRoundBoard({
             )}
           </div>
           {isRoutine && (
-            <div className="flex items-center justify-between text-slate-500 text-sm mt-2 pl-8">
+            <div className="flex items-center justify-between text-muted-foreground text-sm mt-2 pl-8">
               <div className="flex items-center gap-2">
                 <span className="text-xs"><Clock className="w-3 h-3"/></span> Routine Height / Time (ToF):
               </div>
@@ -105,7 +105,7 @@ export function CurrentRoundBoard({
                 placeholder="e.g. 16.5"
                 value={routineTof}
                 onChange={(e) => setRoutineTof(e.target.value)}
-                className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-slate-800"
+                className="w-24 px-3 py-1.5 border border-border rounded-lg text-foreground bg-muted/50"
               />
             </div>
           )}

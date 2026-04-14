@@ -23,13 +23,13 @@ export default function SessionCard({
   notes,
 }: SessionCardProps) {
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col gap-4 max-w-lg hover:shadow-md transition-shadow cursor-pointer">
+    <div className="bg-card rounded-2xl p-4 shadow-sm border border-border flex flex-col gap-4 max-w-lg hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-1">
-          <h2 className="font-bold">{date}</h2>
+          <h2 className="font-bold text-foreground">{date}</h2>
           <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-slate-500" />
-            <p className="text-sm text-slate-500">{time}</p>
+            <Clock className="w-4 h-4 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">{time}</p>
           </div>
         </div>
         <div className="flex">
@@ -42,21 +42,21 @@ export default function SessionCard({
                 className={`w-4 h-4 transition-colors ${
                   starIndex <= rating
                     ? "fill-primary text-primary"
-                    : "fill-transparent text-slate-300"
+                    : "fill-transparent text-muted"
                 }`}
               />
             </div>
           ))}
         </div>
       </div>
-      <div className="flex gap-4 text-sm font-medium text-slate-500">
+      <div className="flex gap-4 text-sm font-medium text-muted-foreground">
         <p><span className="font-bold text-primary">{difficulty}</span> Diff</p>
-        <p><span className="font-bold text-black">{rounds}</span> Rounds</p>
-        <p><span className="font-bold text-black">{jumps}</span> Jumps</p>
-        <p><span className="font-bold text-black">{total_routines}</span> Routines</p>
+        <p><span className="font-bold text-foreground">{rounds}</span> Rounds</p>
+        <p><span className="font-bold text-foreground">{jumps}</span> Jumps</p>
+        <p><span className="font-bold text-foreground">{total_routines}</span> Routines</p>
       </div>
       <div>
-        <p className="text-sm text-slate-500 italic">{notes ? `${notes.length > 130 ? notes.slice(0, 130) + "..." : notes}` : "No notes"}</p>
+        <p className="text-sm text-muted-foreground italic">{notes ? `${notes.length > 130 ? notes.slice(0, 130) + "..." : notes}` : "No notes"}</p>
       </div>
     </div>
   );

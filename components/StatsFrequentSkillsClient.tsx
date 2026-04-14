@@ -26,8 +26,8 @@ export default function StatsFrequentSkillsClient({
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-xl p-5 shadow-sm border border-slate-100 h-full col-span-2">
-      <h3 className="text-black font-bold mb-6">Most frequent skills</h3>
+    <div className="flex flex-col bg-card rounded-xl p-5 shadow-sm border border-border h-full col-span-2">
+      <h3 className="text-foreground font-bold mb-6">Most frequent skills</h3>
 
       <div className="w-full flex flex-col gap-6">
         {selectedCodes.map((code, index) => {
@@ -38,14 +38,14 @@ export default function StatsFrequentSkillsClient({
             <div key={`${code}-${index}`} className="w-full">
               <div className="flex justify-between items-end mb-2">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-black font-bold">
+                  <h4 className="text-foreground font-bold">
                     {skill.name}{" "}
                     <span className="text-muted-foreground text-sm">
                       ({skill.code})
                     </span>
                   </h4>
                   <div className="relative flex items-center">
-                    <button className="text-slate-300 hover:text-slate-600 transition-colors">
+                    <button className="text-muted-foreground hover:text-foreground transition-colors">
                       <ChevronDown className="w-5 h-5" />
                     </button>
                     <select
@@ -65,7 +65,7 @@ export default function StatsFrequentSkillsClient({
                 <p className="font-bold text-primary">{skill.count}x</p>
               </div>
 
-              <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden mt-2">
+              <div className="w-full h-3 bg-muted rounded-full overflow-hidden mt-2">
                 <div
                   className="h-full bg-primary rounded-full transition-all duration-500"
                   style={{ width: `${(skill.count / highestCount) * 100}%` }}

@@ -12,8 +12,8 @@ export default async function StatsRating({ filter, userId }: Props) {
   const roundedRating = Math.round(rating);
 
   return (
-    <div className="flex flex-col justify-center bg-white rounded-xl p-5 shadow-sm border border-slate-100">
-      <h3 className="text-black font-bold mb-2">
+    <div className="flex flex-col justify-center bg-card rounded-xl p-5 shadow-sm border border-border">
+      <h3 className="text-foreground font-bold mb-2">
         Average Training Rating
       </h3>
 
@@ -29,7 +29,7 @@ export default async function StatsRating({ filter, userId }: Props) {
               className={`h-6 w-6 stroke-[2.5px] transition-colors ${
                 starIndex <= roundedRating
                   ? "fill-primary text-primary"
-                  : "fill-transparent text-primary/30"
+                  : "fill-transparent text-muted"
               }`}
             />
           ))}

@@ -33,9 +33,9 @@ export default function SessionClient({ sessions }: Props) {
 
   const displayedSessions = filteredSessions.slice(0, displayCount);
   return (
-    <div className="pb-14 min-h-screen bg-slate-50/50">
+    <div className="pb-14 min-h-screen bg-background">
       <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
-        <h1 className="font-bold text-2xl">Training Sessions</h1>
+        <h1 className="font-bold text-2xl text-foreground">Training Sessions</h1>
         <div>
           <Filter
             onSearchQuery={(search) => {
@@ -84,7 +84,7 @@ export default function SessionClient({ sessions }: Props) {
             {displayCount < filteredSessions.length && (
               <button
                 onClick={() => setDisplayCount(displayCount + 10)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 shadow-sm transition-all"
+                className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground placeholder:text-muted-foreground shadow-sm transition-all"
               >
                 Load More
               </button>

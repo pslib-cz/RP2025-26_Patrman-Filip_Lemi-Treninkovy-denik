@@ -45,18 +45,18 @@ export default async function SessionByIdPage({
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12">
+    <div className="min-h-screen bg-background pb-12">
       <div className="max-w-md mx-auto p-4 flex flex-col gap-6 pt-6">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard/sessions"
-            className="w-10 h-10 border border-slate-200 bg-white rounded-full flex items-center justify-center text-slate-500 hover:text-slate-900 shadow-sm transition-colors"
+            className="w-10 h-10 border border-border bg-card rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="font-bold text-xl text-slate-800">Session Detail</h1>
-            <p className="text-sm font-medium text-slate-500">
+            <h1 className="font-bold text-xl text-foreground">Session Detail</h1>
+            <p className="text-sm font-medium text-muted-foreground">
               {new Date(session.date).toLocaleDateString("en-US", {
                 weekday: "long",
                 month: "long",
@@ -78,27 +78,27 @@ export default async function SessionByIdPage({
             icon={<MoveVertical className="w-4 h-4" />}
             value={session.total_jumps || 0}
             label="Jumps"
-            className="text-slate-800"
+            className="text-foreground"
           />
 
           <SessionMetricsCard
             icon={<RotateCcw className="w-4 h-4" />}
             value={session.total_rounds || 0}
             label="Rounds"
-            className="text-slate-800"
+            className="text-foreground"
           />
 
           <SessionMetricsCard
             icon={<Target className="w-4 h-4" />}
             value={session.total_routines || 0}
             label="Routines"
-            className="text-slate-800"
+            className="text-foreground"
           />
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+        <div className="bg-card border border-border rounded-2xl p-4 shadow-sm flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-slate-600">
+            <span className="text-sm font-bold text-muted-foreground">
               Session Rating
             </span>
             <div className="flex gap-1">
@@ -108,7 +108,7 @@ export default async function SessionByIdPage({
                   className={`w-5 h-5 ${
                     star <= (session.rating || 0)
                       ? "fill-primary text-primary"
-                      : "fill-slate-100 text-slate-300"
+                      : "fill-muted text-border"
                   }`}
                 />
               ))}
@@ -116,11 +116,11 @@ export default async function SessionByIdPage({
           </div>
 
           {session.notes && (
-            <div className="mt-2 pt-3 border-t border-slate-100">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">
+            <div className="mt-2 pt-3 border-t border-border">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
                 Notes
               </span>
-              <p className="text-sm text-slate-700 font-medium italic">
+              <p className="text-sm text-foreground font-medium italic">
                 &quot;{session.notes}&quot;
               </p>
             </div>

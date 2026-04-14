@@ -11,12 +11,12 @@ export default async function RoutineSuccessCard({ filter, userId }: Props) {
   
   const chartData = [
     { name: "Success", value: rate, color: "fill-primary" },
-    { name: "Incomplete", value: 100 - rate, color: "fill-slate-100" }       
+    { name: "Incomplete", value: 100 - rate, color: "fill-muted" }       
   ].filter((item) => item.value > 0);
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-xl p-5 shadow-sm border border-slate-100">
-      <h3 className="text-black font-bold mb-2">
+    <div className="flex flex-col h-full bg-card rounded-xl p-5 shadow-sm border border-border">
+      <h3 className="text-foreground font-bold mb-2">
         Routine Success Rate
       </h3>
       

@@ -19,7 +19,7 @@ interface Props {
 export default function StatsTofChart({ data, title, color = "#ea580c" }: Props) {
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col bg-white rounded-xl p-5 shadow-sm border border-slate-100 col-span-2 min-h-[300px] justify-center items-center">
+      <div className="flex flex-col bg-card rounded-xl p-5 shadow-sm border border-border col-span-2 min-h-[300px] justify-center items-center">
         <p className="text-muted-foreground text-sm">
           No 10-jump data available for this period.
         </p>
@@ -28,8 +28,8 @@ export default function StatsTofChart({ data, title, color = "#ea580c" }: Props)
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-xl p-5 shadow-sm border border-slate-100 col-span-2">
-      <h3 className="text-black font-bold mb-6">
+    <div className="flex flex-col bg-card rounded-xl p-5 shadow-sm border border-border col-span-2">
+      <h3 className="text-foreground font-bold mb-6">
         {title}
       </h3>
 
@@ -42,11 +42,11 @@ export default function StatsTofChart({ data, title, color = "#ea580c" }: Props)
             <CartesianGrid
               strokeDasharray="3 3"
               vertical={false}
-              stroke="#e2e8f0"
+              stroke="var(--border)"
             />
             <XAxis
               dataKey="date"
-              stroke="#94a3b8"
+              stroke="var(--muted-foreground)"
               fontSize={12}
               tickLine={false}
               axisLine={false}
@@ -54,7 +54,7 @@ export default function StatsTofChart({ data, title, color = "#ea580c" }: Props)
             />
 
             <YAxis
-              stroke="#94a3b8"
+              stroke="var(--muted-foreground)"
               fontSize={12}
               tickLine={false}
               axisLine={false}
@@ -64,11 +64,12 @@ export default function StatsTofChart({ data, title, color = "#ea580c" }: Props)
             <Tooltip
               contentStyle={{
                 borderRadius: "12px",
-                border: "1px solid #f1f5f9",
+                border: "1px solid var(--border)",
+                backgroundColor: "var(--card)",
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
               }}
               labelStyle={{
-                color: "#0f172a",
+                color: "var(--foreground)",
                 fontWeight: "bold",
                 marginBottom: "4px",
               }}
@@ -84,8 +85,8 @@ export default function StatsTofChart({ data, title, color = "#ea580c" }: Props)
               dataKey="time"
               stroke={color}
               strokeWidth={4}
-              dot={{ r: 4, fill: color, strokeWidth: 2, stroke: "#fff" }}
-              activeDot={{ r: 6, stroke: "#fff", strokeWidth: 2 }}
+              dot={{ r: 4, fill: color, strokeWidth: 2, stroke: "var(--card)" }}
+              activeDot={{ r: 6, stroke: "var(--card)", strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>

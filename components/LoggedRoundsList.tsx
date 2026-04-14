@@ -19,7 +19,7 @@ export function LoggedRoundsList({
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="font-bold text-base text-slate-800">
+      <h2 className="font-bold text-base text-foreground">
         Logged Rounds ({rounds.length})
       </h2>
 
@@ -29,17 +29,17 @@ export function LoggedRoundsList({
             key={round.id}
             className={`border rounded-xl p-3 shadow-sm flex flex-col gap-2 transition-colors ${
               round.id === editingRoundId
-                ? "bg-orange-50 border-orange-300 ring-1 ring-orange-100"
-                : "bg-white border-slate-200"
+                ? "bg-primary/10 border-primary ring-1 ring-primary/10"
+                : "bg-card border-border"
             }`}
           >
             <div className="flex justify-between items-center">
-              <span className="font-bold text-sm text-slate-900">
+              <span className="font-bold text-sm text-foreground">
                 Round {index + 1}
               </span>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-slate-500">
+                <span className="text-xs font-medium text-muted-foreground">
                   {round.skills.length} skills
                 </span>
                 <span className="bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
@@ -50,15 +50,15 @@ export function LoggedRoundsList({
                   disabled={round.id === editingRoundId}
                   className={`transition-colors ${
                     round.id === editingRoundId
-                      ? "text-orange-500"
-                      : "text-slate-400 hover:text-slate-600"
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <Pencil className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => onDeleteRound(round.id)}
-                  className="text-slate-400 hover:text-destructive transition-colors"
+                  className="text-muted-foreground hover:text-destructive transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -70,7 +70,7 @@ export function LoggedRoundsList({
                   {round.routine_type} Routine
                 </span>
                 {round.tof && (
-                  <span className="text-xs font-medium text-slate-500 flex items-center gap-1">
+                  <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                     <Clock className="w-3 h-3"/> {round.tof}s
                   </span>
                 )}
@@ -81,7 +81,7 @@ export function LoggedRoundsList({
               {round.skills.map((skill) => (
                 <span
                   key={skill.id}
-                  className="bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs shadow-sm rounded-full px-2 py-1"
+                  className="bg-muted border border-border text-foreground font-mono text-xs shadow-sm rounded-full px-2 py-1"
                 >
                   {skill.fig_code === "-" && skill.tof !== undefined
                     ? `- (${skill.tof}s)`

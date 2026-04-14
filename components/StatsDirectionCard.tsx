@@ -16,13 +16,12 @@ export default async function StatsDirectionCard({ filter, userId }: Props) {
   ].filter(item => item.value > 0);
 
   return (
-    <div className="flex flex-col bg-white rounded-xl p-5 shadow-sm border border-slate-100 h-full">
-      <h3 className="text-black font-bold mb-2">
+    <div className="flex flex-col bg-card rounded-xl p-5 shadow-sm border border-border h-full">
+      <h3 className="text-foreground font-bold mb-2">
         Flip Direction
       </h3>
       
       <div className="relative w-full flex items-center justify-center">
-         
          <StatsPieChart data={chartData} />
 
          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">

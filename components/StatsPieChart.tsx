@@ -23,7 +23,15 @@ export default function StatsPieChart({ data }: Props) {
                         <Cell key={index} className={`${entry.color}`} />
                     ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                    contentStyle={{
+                        borderRadius: "12px",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--card)",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    }}
+                    itemStyle={{ color: "var(--foreground)", fontSize: "12px", fontWeight: "bold" }}
+                />
             </PieChart>
         </ResponsiveContainer>
     );

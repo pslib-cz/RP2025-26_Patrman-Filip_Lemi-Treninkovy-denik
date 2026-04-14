@@ -24,7 +24,7 @@ export default async function StatsPage({ searchParams }: Props) {
   const timeFilter = (await searchParams).time || "all";
   
   return (
-    <div className="pb-14 min-h-screen bg-slate-50/50 overflow-x-hidden">
+    <div className="pb-14 min-h-screen bg-background overflow-x-hidden">
       <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
         <h1 className="font-bold text-2xl">My Progress</h1>
         <StatsTimeFilter />

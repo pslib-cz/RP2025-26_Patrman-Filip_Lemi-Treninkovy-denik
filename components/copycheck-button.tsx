@@ -10,7 +10,7 @@ export function CopyCheckButton({ onDuplicateRound, onFinishSession }: Props) {
     <div className="mt-2 flex gap-2">
       <button
         onClick={() => onDuplicateRound()}
-        className="flex-1 py-2 text-sm bg-white border border-border text-slate-600 rounded-lg font-semibold flex items-center justify-center gap-1.5 hover:bg-slate-50 transition-colors shadow-sm"
+        className="flex-1 py-2 text-sm bg-card border border-border text-muted-foreground rounded-lg font-semibold flex items-center justify-center gap-1.5 hover:bg-muted transition-colors shadow-sm"
       >
         <Copy className="w-4 h-4" />
         Duplicate Last

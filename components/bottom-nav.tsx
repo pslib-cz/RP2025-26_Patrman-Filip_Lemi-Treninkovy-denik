@@ -23,7 +23,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 z-50 w-full border-t bg-background pb-safe">
+    <nav className="fixed bottom-0 z-50 w-full border-t border-border bg-background/80 backdrop-blur-md pb-safe">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;

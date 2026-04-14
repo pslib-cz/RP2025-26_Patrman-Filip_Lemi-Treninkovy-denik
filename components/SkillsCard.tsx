@@ -13,13 +13,13 @@ export default function SkillsCard({ skill }: { skill: SkillLibrary }) {
   };
   const statusIcons = {
     mastered: (
-      <CircleCheckBig className="text-orange-500 bg-orange-100 p-2 rounded-full w-10 h-10" />
+      <CircleCheckBig className="text-primary bg-primary/10 p-2 rounded-full w-10 h-10" />
     ),
     learning: (
       <BookOpen className="text-secondary bg-secondary/10 p-2 rounded-full w-10 h-10" />
     ),
     not_started: (
-      <CircleDashed className="text-slate-300 bg-slate-50 p-2 rounded-full w-10 h-10" />
+      <CircleDashed className="text-muted-foreground bg-muted p-2 rounded-full w-10 h-10" />
     ),
   };
   const handleStatusChange = async (
@@ -29,11 +29,11 @@ export default function SkillsCard({ skill }: { skill: SkillLibrary }) {
     router.refresh();
   };
   return (
-    <div className="flex justify-between shadow-xs rounded-xl p-4 bg-white items-center">
+    <div className="flex justify-between shadow-xs rounded-xl p-4 bg-card border border-border items-center">
       <div className="flex items-center gap-2">
         {statusIcons[skill.status]}
         <div className="flex flex-col">
-          <h2 className="text-black font-bold">{skill.name}</h2>
+          <h2 className="text-foreground font-bold">{skill.name}</h2>
           <div className="flex gap-2">
             <span className="text-muted-foreground text-sm">
               {skill.fig_code}

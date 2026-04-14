@@ -22,12 +22,12 @@ export function FinishSessionScreen({
 
   return (
     
-    <div className="flex flex-col flex-1 gap-6 pt-4 px-4 bg-slate-50/50 items-center justify-center mt-4">
+    <div className="flex flex-col flex-1 gap-6 pt-4 px-4 bg-background items-center justify-center mt-4">
       <div className="text-center space-y-1">
-        <h2 className="text-xl font-bold text-slate-900">
+        <h2 className="text-xl font-bold text-foreground">
           How was your session?
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-muted-foreground">
           Rate your training and add notes.
         </p>
       </div>
@@ -45,7 +45,7 @@ export function FinishSessionScreen({
               className={`w-8 h-8 transition-colors ${
                 starIndex <= rating
                   ? "fill-primary text-primary"
-                  : "fill-transparent text-slate-300"
+                  : "fill-transparent text-muted"
               }`}
             />
           </button>
@@ -53,7 +53,7 @@ export function FinishSessionScreen({
       </div>
 
       <div className="w-full space-y-2">
-        <label className="text-xs font-semibold text-slate-700">
+        <label className="text-xs font-semibold text-foreground">
           Coach&apos;s Notes / Personal Feeling
         </label>
         <textarea
@@ -62,7 +62,7 @@ export function FinishSessionScreen({
             setNotes(e.target.value);
           }}
           placeholder="How did it go? Any observations..."
-          className="w-full min-h-[100px] p-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none text-slate-700"
+          className="w-full min-h-[100px] p-3 text-sm bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none text-foreground placeholder:text-muted-foreground"
         />
       </div>
 
@@ -77,7 +77,7 @@ export function FinishSessionScreen({
 
         <button
           onClick={onCancel}
-          className="w-full py-2 text-sm text-slate-500 font-medium hover:text-slate-800 transition-colors"
+          className="w-full py-2 text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
         >
           Back to Editing
         </button>
