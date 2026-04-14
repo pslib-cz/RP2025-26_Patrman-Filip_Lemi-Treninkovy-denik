@@ -69,7 +69,7 @@ export default function LogClient({ dictionary, userSkills }: Props) {
     if (key === "SPACE") {
       if (currentInput.trim() === "") return;
 
-      if (currentInput === "-") {
+      if (currentInput === "-" && currentRoundSkills.length === 0) {
         setShowTofInput(true);
         setTofValue("");
         setCurrentInput("");
