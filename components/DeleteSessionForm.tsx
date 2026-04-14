@@ -22,8 +22,8 @@ export function DeleteSessionForm({ deleteAction }: Props) {
       </button>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center pb-8 px-4 sm:p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl mx-auto animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl mx-auto animate-in zoom-in-95 duration-300">
             <div className="flex flex-col items-center text-center gap-5">
               <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mt-2">
                 <Trash2 className="w-8 h-8" />
