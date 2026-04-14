@@ -17,27 +17,36 @@ export type Database = {
       profiles: {
         Row: {
           age: number | null
+          avatar_url: string | null
           full_name: string | null
           gender: string | null
+          height: number | null
           id: string
           updated_at: string | null
           username: string | null
+          weight: number | null
         }
         Insert: {
           age?: number | null
+          avatar_url?: string | null
           full_name?: string | null
           gender?: string | null
+          height?: number | null
           id: string
           updated_at?: string | null
           username?: string | null
+          weight?: number | null
         }
         Update: {
           age?: number | null
+          avatar_url?: string | null
           full_name?: string | null
           gender?: string | null
+          height?: number | null
           id?: string
           updated_at?: string | null
           username?: string | null
+          weight?: number | null
         }
         Relationships: []
       }
@@ -137,12 +146,11 @@ export type Database = {
           notes: string | null
           rating: number | null
           total_difficulty: number | null
+          total_jumps: number
           total_rounds: number | null
+          total_routines: number
           updated_at: string | null
           user_id: string
-          total_jumps: number | null
-          total_routines: number | null
-
         }
         Insert: {
           date?: string
@@ -151,12 +159,11 @@ export type Database = {
           notes?: string | null
           rating?: number | null
           total_difficulty?: number | null
+          total_jumps?: number
           total_rounds?: number | null
+          total_routines?: number
           updated_at?: string | null
           user_id: string
-          total_jumps: number | null
-          total_routines: number | null
-
         }
         Update: {
           date?: string
@@ -165,12 +172,11 @@ export type Database = {
           notes?: string | null
           rating?: number | null
           total_difficulty?: number | null
+          total_jumps?: number
           total_rounds?: number | null
+          total_routines?: number
           updated_at?: string | null
           user_id?: string
-          total_jumps: number | null
-          total_routines: number | null
-
         }
         Relationships: []
       }
@@ -224,7 +230,7 @@ export type Database = {
           date_mastered: string | null
           id: string
           skill_id: string
-          status: "not_started" | "learning" | "mastered"
+          status: string | null
           updated_at: string | null
           user_id: string
         }
@@ -232,7 +238,7 @@ export type Database = {
           date_mastered?: string | null
           id?: string
           skill_id: string
-          status?: "not_started" | "learning" | "mastered"
+          status?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -240,7 +246,7 @@ export type Database = {
           date_mastered?: string | null
           id?: string
           skill_id?: string
-          status?: "not_started" | "learning" | "mastered"
+          status?: string | null
           updated_at?: string | null
           user_id?: string
         }

@@ -13,6 +13,8 @@ export const profileSchema = z.object({
   full_name: z.string().nullable(),
   age: z.number().min(1, "Invalid age").max(120).nullable(),
   gender: z.enum(["male", "female", "other"]).nullable(),
+  weight: z.number().min(1, "Invalid weight").max(1000).nullable(),
+  height: z.number().min(1, "Invalid height").max(300).nullable()
 });
 
 export type ProfileData = z.infer<typeof profileSchema>;
@@ -29,6 +31,8 @@ export function ProfileForm({ initialData, userId }: Props) {
     full_name: initialData?.full_name || "",
     age: initialData?.age || 0,
     gender: initialData?.gender || null,
+    weight: initialData?.weight || 0,
+    height: initialData?.height || 0,
   });
 
   const {
@@ -88,6 +92,18 @@ export function ProfileForm({ initialData, userId }: Props) {
             <p className="text-sm font-bold text-muted-foreground">Gender</p>
             <p className="font-bold text-black capitalize">
               {currentData.gender}
+            </p>
+          </div>
+          <div className="flex justify-between items-center pt-1">
+            <p className="text-sm font-bold text-muted-foreground">Weight</p>
+            <p className="font-bold text-black">
+              {currentData.weight}
+            </p>
+          </div>
+          <div className="flex justify-between items-center pt-1">
+            <p className="text-sm font-bold text-muted-foreground">Height</p>
+            <p className="font-bold text-black">
+              {currentData.height}
             </p>
           </div>
         </div>
@@ -152,6 +168,34 @@ export function ProfileForm({ initialData, userId }: Props) {
         </select>
         {errors.gender && (
           <p className="text-xs text-red-500">{errors.gender.message}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+          Weight
+        </label>
+        <input
+          type="number"
+          {...register("weight", { valueAsNumber: true })}
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+        />
+        {errors.weight && (
+          <p className="text-xs text-red-500">{errors.weight.message}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+          Height
+        </label>
+        <input
+          type="number"
+          {...register("height", { valueAsNumber: true })}
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm font-medium text-black focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+        />
+        {errors.height && (
+          <p className="text-xs text-red-500">{errors.height.message}</p>
         )}
       </div>
 

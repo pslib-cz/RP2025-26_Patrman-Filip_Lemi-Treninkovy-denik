@@ -2,13 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-
-interface ProfileData {
-  username: string | null;
-  full_name: string | null;
-  age: number | null;
-  gender: string | null;
-}
+import { ProfileData } from "@/app/dashboard/profile/ProfileForm";
 
 export async function updateProfileData(userId: string | undefined, data: ProfileData) {
   if (!userId) {
@@ -24,6 +18,8 @@ export async function updateProfileData(userId: string | undefined, data: Profil
       full_name: data.full_name,
       age: data.age,
       gender: data.gender,
+      weight: data.weight,
+      height: data.height,
       updated_at: new Date().toISOString(),
     })
     .eq("id", userId);
