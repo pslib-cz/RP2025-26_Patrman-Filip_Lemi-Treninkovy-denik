@@ -52,7 +52,7 @@ export function SessionDetailRounds({ rounds }: { rounds: Round[] }) {
                 >
                   {skill.fig_code === "-" && skill.tof !== undefined
                     ? `- (${skill.tof}s)`
-                    : skill.fig_code}
+                    : skill.fig_code} 
                 </span>
               ))}
             </div>
