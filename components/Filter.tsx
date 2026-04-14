@@ -41,6 +41,8 @@ export default function Filter({
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         >
           <option value="all">Time: All</option>
+          <option value="day">Day</option>
+          <option value="week">Week</option>
           <option value="month">Month</option>
           <option value="3months">3 Months</option>
           <option value="year">Year</option>

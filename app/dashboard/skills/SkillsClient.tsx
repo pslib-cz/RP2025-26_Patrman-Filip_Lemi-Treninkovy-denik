@@ -24,8 +24,10 @@ export default function SkillsClient({ skills }: Props) {
     month: "long",
     day: "numeric",
     year: "numeric",
-    weekday: "long"
+    weekday: "long",
   });
+  const weekAgo = new Date(now);
+  weekAgo.setDate(weekAgo.getDate() - 7);
   return (
     <div className="min-h-screen pb-12 bg-background">
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
@@ -49,9 +51,14 @@ export default function SkillsClient({ skills }: Props) {
         />
         <div className="flex flex-col gap-2">
           {[...skills]
-            .filter((skill) => checkSkillSearchMatch(skill, lowerQuery, dateFormatter))
-            .filter((skill) => checkTimeFilter(skill, timeFilter, now))
-            .filter((skill) => statusFilter === "all" || skill.status === statusFilter)
+            .filter((skill) =>
+              checkSkillSearchMatch(skill, lowerQuery, dateFormatter),
+            )
+            .filter((skill) => checkTimeFilter(skill, timeFilter, now, weekAgo))
+            .filter(
+              (skill) =>
+                statusFilter === "all" || skill.status === statusFilter,
+            )
             .sort((a, b) => statusPriority[a.status] - statusPriority[b.status])
             .map((skill) => (
               <SkillsCard key={skill.id} skill={skill} />
@@ -72,11 +79,13 @@ function checkSkillSearchMatch(
   const matchesCode = skill.fig_code.toLowerCase().includes(lowerQuery);
 
   let matchesDate = false;
-  if(skill.date_mastered){
+  if (skill.date_mastered) {
     const dateObj = new Date(skill.date_mastered);
     const searchStringDate = dateFormatter.format(dateObj);
     const searchStringDateNUMBER = `${dateObj.getDate()}.${dateObj.getMonth() + 1}.${dateObj.getFullYear()}`;
-    matchesDate = searchStringDate.toLowerCase().includes(lowerQuery) || searchStringDateNUMBER.includes(lowerQuery);
+    matchesDate =
+      searchStringDate.toLowerCase().includes(lowerQuery) ||
+      searchStringDateNUMBER.includes(lowerQuery);
   }
 
   return matchesName || matchesCode || matchesDate;
@@ -86,6 +95,7 @@ function checkTimeFilter(
   skill: SkillLibrary,
   timeFilter: string,
   now: Date,
+  weekAgo: Date,
 ): boolean {
   if (timeFilter === "all") return true;
   const matchTime = skill.date_mastered;
@@ -107,6 +117,14 @@ function checkTimeFilter(
   }
   if (timeFilter === "year") {
     if (dateObj.getFullYear() !== now.getFullYear()) return false;
+  }
+  if (timeFilter === "day") {
+    if (dateObj.getDate() !== now.getDate()) return false;
+    if (dateObj.getMonth() !== now.getMonth()) return false;
+    if (dateObj.getFullYear() !== now.getFullYear()) return false;
+  }
+  if (timeFilter === "week") {
+    if (dateObj < weekAgo) return false;
   }
   return true;
 }

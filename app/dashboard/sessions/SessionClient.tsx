@@ -20,13 +20,15 @@ export default function SessionClient({ sessions }: Props) {
     month: "long",
     day: "numeric",
     year: "numeric",
-    weekday: "long"
+    weekday: "long",
   });
+  const weekAgo = new Date(now);
+  weekAgo.setDate(weekAgo.getDate() - 7);
 
   const filteredSessions = sessions.filter((session) => {
     const dateObj = new Date(session.date);
 
-    if (!checkTimeFilter(dateObj, timeFilter, now)) return false;
+    if (!checkTimeFilter(dateObj, timeFilter, now, weekAgo)) return false;
 
     return checkSearchMatch(session, lowerQuery, dateFormatter, dateObj);
   });
@@ -35,7 +37,9 @@ export default function SessionClient({ sessions }: Props) {
   return (
     <div className="pb-14 min-h-screen bg-background">
       <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
-        <h1 className="font-bold text-2xl text-foreground">Training Sessions</h1>
+        <h1 className="font-bold text-2xl text-foreground">
+          Training Sessions
+        </h1>
         <div>
           <Filter
             onSearchQuery={(search) => {
@@ -96,7 +100,20 @@ export default function SessionClient({ sessions }: Props) {
   );
 }
 
-function checkTimeFilter(dateObj: Date, timeFilter: string, now: Date) {
+function checkTimeFilter(
+  dateObj: Date,
+  timeFilter: string,
+  now: Date,
+  weekAgo: Date,
+) {
+  if (timeFilter === "day") {
+    if (dateObj.getDate() !== now.getDate()) return false;
+    if (dateObj.getMonth() !== now.getMonth()) return false;
+    if (dateObj.getFullYear() !== now.getFullYear()) return false;
+  }
+  if (timeFilter === "week") {
+    if (dateObj < weekAgo) return false;
+  }
   if (timeFilter === "month") {
     if (
       dateObj.getMonth() !== now.getMonth() ||
@@ -121,7 +138,7 @@ function checkSearchMatch(
   session: SessionHistory,
   lowerQuery: string,
   dateFormatter: Intl.DateTimeFormat,
-  dateObj: Date
+  dateObj: Date,
 ): boolean {
   const searchStringDateEN = dateFormatter.format(dateObj);
   const searchStringDate = `${dateObj.getDate()}.${dateObj.getMonth() + 1}.${dateObj.getFullYear()}`;
@@ -129,12 +146,12 @@ function checkSearchMatch(
     searchStringDateEN.toLowerCase().includes(lowerQuery) ||
     searchStringDate.includes(lowerQuery);
 
-  const matchesNotes = session.notes?.toLowerCase().includes(lowerQuery) || false;
+  const matchesNotes =
+    session.notes?.toLowerCase().includes(lowerQuery) || false;
 
   const matchesSkills = session.rounds.some((round) =>
-    round.fig_string.toLowerCase().includes(lowerQuery)
+    round.fig_string.toLowerCase().includes(lowerQuery),
   );
 
   return matchesDate || matchesNotes || matchesSkills;
 }
-
