@@ -13,21 +13,21 @@ type KeyType = {
 
 const KEYBOARD_ROWS: KeyType[][] = [
   [
-    { label: "/", value: "/" },
-    { label: "-", value: "-" },
-    { label: "<", value: "<" },
-    { label: "o", value: "o" },
-    
-  ],
-  [{ label: ".", value: "." },
+    { label: ".", value: "." },
     { label: "F", value: "F" },
-    { label: "B", value: "B"},
+    { label: "B", value: "B" },
     { label: "SPACE", value: "SPACE", variant: "space" },
     {
       label: <Delete className="w-5 h-5 mx-auto" />,
       value: "BACKSPACE",
       variant: "delete",
     },
+  ],
+  [
+    { label: "/", value: "/" },
+    { label: "-", value: "-" },
+    { label: "<", value: "<" },
+    { label: "o", value: "o" },
   ],
   [
     { label: "0", value: "0" },
