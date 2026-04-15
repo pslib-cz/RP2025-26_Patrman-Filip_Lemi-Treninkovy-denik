@@ -4,12 +4,11 @@ interface Props {
   onKeyPress: (key: string) => void;
 }
 
-// TypeScript type definition for type safety
 type KeyType = {
   label: React.ReactNode;
   value: string;
-  colSpan?: number; // Grid column span (default is e.g. 2, since 5 buttons per row in a 10 col grid)
-  variant?: "default" | "space" | "delete" | "action"; // Color variants
+  colSpan?: number;
+  variant?: "default" | "space" | "delete" | "action";
 };
 
 const KEYBOARD_ROWS: KeyType[][] = [
@@ -18,6 +17,11 @@ const KEYBOARD_ROWS: KeyType[][] = [
     { label: "-", value: "-" },
     { label: "<", value: "<" },
     { label: "o", value: "o" },
+    
+  ],
+  [{ label: ".", value: "." },
+    { label: "F", value: "F" },
+    { label: "B", value: "B"},
     { label: "SPACE", value: "SPACE", variant: "space" },
     {
       label: <Delete className="w-5 h-5 mx-auto" />,

@@ -29,9 +29,10 @@ export function TofBanner({ tofValue, setTofValue, onSave, onClose }: Props) {
       </div>
       <div className="flex gap-2">
         <input
-          type="number"
-          step="0.1"
+          type="text"
           value={tofValue}
+          readOnly
+          inputMode="none"
           onChange={(e) => setTofValue(e.target.value)}
           placeholder="e.g. 18.5"
           className="flex-1 py-2 text-sm bg-card border border-border text-muted-foreground rounded-lg font-semibold flex items-center justify-center gap-1.5 hover:bg-muted transition-colors shadow-sm"

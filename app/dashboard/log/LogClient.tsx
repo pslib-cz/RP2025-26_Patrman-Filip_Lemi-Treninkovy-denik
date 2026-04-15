@@ -65,7 +65,6 @@ export default function LogClient({ dictionary, userSkills }: Props) {
 
   const confirmTof = () => {
     const tofNum = parseFloat(tofValue);
-    if (isNaN(tofNum)) return; // Malá kontrola, aby se neukládaly nesmysly
 
     const newSkill: Skill = {
       id: uuidv4(),
@@ -86,10 +85,8 @@ export default function LogClient({ dictionary, userSkills }: Props) {
         confirmTof()
       } else if (key === "BACKSPACE") {
         setTofValue((prev) => prev.slice(0, -1));
-      } else {
-        if (!isNaN(Number(key)) || key === ".") {
-          setTofValue((prev) => prev + key);
-        }
+      } else if (!Number.isNaN(Number(key)) || key === "."){
+        setTofValue((prev) => prev + key);
       }
       return;
     }
