@@ -335,6 +335,7 @@ export default function LogClient({
     if (missingCodes.length > 0) {
       toast.error(`Could not find: ${missingCodes.join(", ")}`);
     }
+    setShowPresets(false);
   };
 
   const handleDeletePreset = async (id: string, e: React.MouseEvent) => {
