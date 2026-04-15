@@ -38,9 +38,11 @@ export default function LogClient({ dictionary, userSkills }: Props) {
     return userSkills
       .map((us) => {
         const found = dictionary.find((d) => d.id === us.skill_id);
-        return found ? found.code : null;
+        return found ? { code: found.code, direction: found.direction } : null;
       })
-      .filter((code): code is string => code !== null);
+      .filter(
+        (item): item is { code: string; direction: string } => item !== null,
+      );
   }, [dictionary, userSkills]);
 
   const addNewSkill = (inputCode: string) => {
@@ -149,14 +151,32 @@ export default function LogClient({ dictionary, userSkills }: Props) {
       setCurrentInput(newInput);
 
       if (newInput.length > 0) {
-        const match = userSkillCodes.find((code) => code.startsWith(newInput));
-        if (match) {
-          const reminder = match.substring(newInput.length);
-          setSkillSuggestion(reminder);
+        let baseInput = newInput;
+        let expectedDir: string | null = null;
+
+        if (newInput.startsWith("F") || newInput.startsWith("B")) {
+          expectedDir = newInput.slice(0, 1);
+          baseInput = newInput.slice(1);
+        }
+
+        if (baseInput.length > 0) {
+          const match = userSkillCodes.find((item) => {
+            const matchesCode = item.code.startsWith(baseInput);
+            const matchesDir = !expectedDir || item.direction === expectedDir;
+            return matchesCode && matchesDir;
+          });
+
+          if (match) {
+            const reminder = match.code.substring(baseInput.length);
+            setSkillSuggestion(reminder);
+          } else {
+            setSkillSuggestion("");
+          }
         } else {
           setSkillSuggestion("");
         }
       }
+
     }
   };
   const handleConfirmRound = (roundData: Partial<Round>) => {
