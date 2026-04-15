@@ -492,7 +492,7 @@ export default function LogClient({
                 </p>
                 <p className="text-sm text-muted-foreground max-w-[280px] mx-auto">
                   Try typing a code like{" "}
-                  <span className="font-mono font-bold text-primary">4-o</span>{" "}
+                  <span className="font-mono font-bold text-primary">B4-o</span>{" "}
                   using the smart keyboard below.
                 </p>
                 <p className="text-xs text-muted-foreground bg-muted/50 py-2 px-3 rounded-xl border border-border/50">
