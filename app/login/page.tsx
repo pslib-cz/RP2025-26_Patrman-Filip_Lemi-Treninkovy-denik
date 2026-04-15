@@ -11,7 +11,7 @@ export default function LoginPage() {
     <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-6 py-12">
       <div className="w-full max-w-sm">
         <div className="mb-10 flex flex-col items-center gap-3">
-          <Image src="/favicon_io/apple-touch-icon-background-removed.png" alt="Lemi Mascot" width={80} height={80} />
+          <Image src="/Lemi-nobg.svg" alt="Lemi Mascot" width={80} height={80} />
           <h1 className="text-balance text-center text-3xl font-bold tracking-tight text-foreground">
             {isSignUp ? "Create an account" : "Welcome back!"}
           </h1>
@@ -56,7 +56,9 @@ export default function LoginPage() {
               id="password"
               type="password"
               name="password"
-              placeholder={isSignUp ? "Create a password" : "Enter your password"}
+              placeholder={
+                isSignUp ? "Create a password" : "Enter your password"
+              }
               required
               autoComplete="current-password"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"

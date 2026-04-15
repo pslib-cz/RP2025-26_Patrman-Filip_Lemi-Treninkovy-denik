@@ -21,7 +21,11 @@ interface Props {
   skillScores: Record<string, number>;
 }
 
-export default function LogClient({ dictionary, userSkills, skillScores }: Props) {
+export default function LogClient({
+  dictionary,
+  userSkills,
+  skillScores,
+}: Props) {
   const [currentInput, setCurrentInput] = useState<string>("");
   const [currentRoundSkills, setCurrentRoundSkills] = useState<Skill[]>([]);
   const [rounds, setRounds] = useState<Round[]>([]);
@@ -35,25 +39,26 @@ export default function LogClient({ dictionary, userSkills, skillScores }: Props
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [skillSuggestion, setSkillSuggestion] = useState<string>("");
-    const userSkillCodes = useMemo(() => {
-    return userSkills
-      .map((us) => {
-        const found = dictionary.find((d) => d.id === us.skill_id);
-        if (!found) return null;
+  const userSkillCodes = useMemo(() => {
+    return (
+      userSkills
+        .map((us) => {
+          const found = dictionary.find((d) => d.id === us.skill_id);
+          if (!found) return null;
 
-        // Pokud pro kód existuje bodové hodnocení, vezmi ho, jinak dej 0
-        const score = skillScores[found.code] || 0;
+          // Pokud pro kód existuje bodové hodnocení, vezmi ho, jinak dej 0
+          const score = skillScores[found.code] || 0;
 
-        return { code: found.code, direction: found.direction, score: score };
-      })
-      .filter(
-        (item): item is { code: string; direction: string; score: number } =>
-          item !== null
-      )
-      // TADY JE TA CHYTROST: Seřadíme prvky podle skóre
-      .sort((a, b) => b.score - a.score);
+          return { code: found.code, direction: found.direction, score: score };
+        })
+        .filter(
+          (item): item is { code: string; direction: string; score: number } =>
+            item !== null,
+        )
+        // TADY JE TA CHYTROST: Seřadíme prvky podle skóre
+        .sort((a, b) => b.score - a.score)
+    );
   }, [dictionary, userSkills, skillScores]); // Nezapomeň přidat skillScores do závislostí
-
 
   const addNewSkill = (inputCode: string) => {
     let baseCode = inputCode;
@@ -186,7 +191,6 @@ export default function LogClient({ dictionary, userSkills, skillScores }: Props
           setSkillSuggestion("");
         }
       }
-
     }
   };
   const handleConfirmRound = (roundData: Partial<Round>) => {
@@ -388,7 +392,7 @@ export default function LogClient({ dictionary, userSkills, skillScores }: Props
           userSkills.length === 0 && (
             <div className="text-center p-8 bg-muted/20 rounded-3xl border-2 border-dashed border-border mb-4 flex flex-col items-center">
               <Image
-                src="/favicon_io/apple-touch-icon-background-removed.png"
+                src="/Lemi-nobg.svg"
                 alt="Lemi Mascot"
                 width={100}
                 height={100}

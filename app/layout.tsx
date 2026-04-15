@@ -14,7 +14,6 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Lemi",
   description: "Lemi - Training Log",
-  manifest: "/favicon_io/site.webmanifest",
 };
 
 export const viewport: Viewport = {

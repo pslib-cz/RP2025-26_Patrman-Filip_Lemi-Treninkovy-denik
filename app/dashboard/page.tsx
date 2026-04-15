@@ -17,14 +17,15 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center gap-3">
-        <Image src="/favicon_io/apple-touch-icon-background-removed.png" alt="Lemi Mascot" width={80} height={80} />
+        <Image src="/Lemi-nobg.svg" alt="Lemi Mascot" width={80} height={80} />
         <div>
           <p className="text-xs text-muted-foreground">Good to see you!</p>
           <h1 className="text-xl font-bold">
             Ready to fly,{" "}
             <span className="text-primary">
               {dashboardData.username || "Jumper"}
-            </span>?
+            </span>
+            ?
           </h1>
         </div>
       </div>
