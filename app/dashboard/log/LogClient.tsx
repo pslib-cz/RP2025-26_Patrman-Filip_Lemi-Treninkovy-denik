@@ -18,9 +18,10 @@ import Image from "next/image";
 interface Props {
   dictionary: DbSkill[];
   userSkills: UserSkills[];
+  skillScores: Record<string, number>;
 }
 
-export default function LogClient({ dictionary, userSkills }: Props) {
+export default function LogClient({ dictionary, userSkills, skillScores }: Props) {
   const [currentInput, setCurrentInput] = useState<string>("");
   const [currentRoundSkills, setCurrentRoundSkills] = useState<Skill[]>([]);
   const [rounds, setRounds] = useState<Round[]>([]);
@@ -34,16 +35,25 @@ export default function LogClient({ dictionary, userSkills }: Props) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [skillSuggestion, setSkillSuggestion] = useState<string>("");
-  const userSkillCodes = useMemo(() => {
+    const userSkillCodes = useMemo(() => {
     return userSkills
       .map((us) => {
         const found = dictionary.find((d) => d.id === us.skill_id);
-        return found ? { code: found.code, direction: found.direction } : null;
+        if (!found) return null;
+
+        // Pokud pro kód existuje bodové hodnocení, vezmi ho, jinak dej 0
+        const score = skillScores[found.code] || 0;
+
+        return { code: found.code, direction: found.direction, score: score };
       })
       .filter(
-        (item): item is { code: string; direction: string } => item !== null,
-      );
-  }, [dictionary, userSkills]);
+        (item): item is { code: string; direction: string; score: number } =>
+          item !== null
+      )
+      // TADY JE TA CHYTROST: Seřadíme prvky podle skóre
+      .sort((a, b) => b.score - a.score);
+  }, [dictionary, userSkills, skillScores]); // Nezapomeň přidat skillScores do závislostí
+
 
   const addNewSkill = (inputCode: string) => {
     let baseCode = inputCode;

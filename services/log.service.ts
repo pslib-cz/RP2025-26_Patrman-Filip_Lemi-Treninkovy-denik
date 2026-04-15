@@ -124,3 +124,41 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
 
   return { success: true, sessionId: sessionData.id };
 }
+
+export async function getSmartSkillScores(userId: string) {
+    const supabase = await createClient();
+    
+    // Vezmeme jen skoky za poslední půlrok, ať nepočítáme celou historii
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const { data: roundsErrorFree } = await supabase
+        .from('rounds')
+        .select('fig_string, sessions!inner(date)')
+        .eq('sessions.user_id', userId)
+        .gte('sessions.date', sixMonthsAgo.toISOString());
+
+    const rounds = roundsErrorFree || [];
+    const scores: Record<string, number> = {};
+    const now = new Date();
+
+    rounds.forEach(round => {
+        if (!round.fig_string || !round.sessions?.date) return;
+
+        const sessionDate = new Date(round.sessions.date);
+        const daysAgo = (now.getTime() - sessionDate.getTime()) / (1000 * 3600 * 24);
+        
+        let scoreWeight = 1;
+        if (daysAgo <= 7) scoreWeight = 5;       // Tento týden
+        else if (daysAgo <= 30) scoreWeight = 3; // Tento měsíc
+        else if (daysAgo <= 90) scoreWeight = 2; // Toto čtvrtletí
+
+        const jumpCodes = round.fig_string.split(" ");
+        jumpCodes.forEach(code => {
+            if (code === "-") return; // TOF nás nezajímá jako prvek k napovídání
+            scores[code] = (scores[code] || 0) + scoreWeight;
+        });
+    });
+
+    return scores;
+}
