@@ -42,7 +42,10 @@ export default async function ProfilePage() {
         </form>
       </div>
 
-      {/* Routine Section */}
+      <div className="bg-card flex flex-col rounded-3xl shadow-sm border border-border p-5 mt-2">
+        <h2 className="text-foreground font-bold mb-5">Personal Information</h2>
+        <ProfileForm initialData={profile as ProfileData} userId={user?.id} />
+      </div>
       {routines && routines.length > 0 && (
         <div className="bg-card flex flex-col rounded-3xl shadow-sm border border-border p-5 mt-2 bg-gradient-to-br from-card to-muted/30">
           <div className="flex items-center gap-2 mb-4">
@@ -70,10 +73,6 @@ export default async function ProfilePage() {
         </div>
       )}
 
-      <div className="bg-card flex flex-col rounded-3xl shadow-sm border border-border p-5 mt-2">
-        <h2 className="text-foreground font-bold mb-5">Personal Information</h2>
-        <ProfileForm initialData={profile as ProfileData} userId={user?.id} />
-      </div>
     </div>
   );
 }
