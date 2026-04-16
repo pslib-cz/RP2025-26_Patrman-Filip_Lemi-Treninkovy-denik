@@ -34,7 +34,7 @@ export default function SkillsCard({ skill }: { skill: SkillLibrary }) {
         {statusIcons[skill.status]}
         <div className="flex flex-col">
           <h2 className="text-foreground font-bold">{skill.name}</h2>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-x-3 gap-y-1">
             <span className="text-muted-foreground text-sm">
               {skill.fig_code}
             </span>
@@ -47,10 +47,10 @@ export default function SkillsCard({ skill }: { skill: SkillLibrary }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-2 shrink-0">
         <div className="relative flex">
           <div
-            className={`hover:cursor-pointer hover:scale-105 transition-transform text-sm text-white rounded-full px-3 py-1 ${skill.status === "mastered" ? "bg-primary" : skill.status === "learning" ? "bg-secondary" : "bg-muted-foreground"}`}
+            className={`ml-2 hover:cursor-pointer hover:scale-105 transition-transform text-sm text-white rounded-full px-3 py-1 ${skill.status === "mastered" ? "bg-primary" : skill.status === "learning" ? "bg-secondary" : "bg-muted-foreground"}`}
           >
             {statusLabels[skill.status]}
           </div>

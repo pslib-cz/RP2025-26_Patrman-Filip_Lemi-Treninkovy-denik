@@ -106,5 +106,5 @@ export async function updateProfile(prevState: AuthState | null, formData: FormD
 
   if (error) return { error: error.message };
 
-  redirect("/dashboard");
+  redirect("/dashboard/skills?onboarding=true");
 }

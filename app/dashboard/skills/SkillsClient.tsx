@@ -2,6 +2,7 @@
 import Filter from "@/components/Filter";
 import SkillsCard from "@/components/SkillsCard";
 import { SkillLibrary } from "@/types/training";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 interface Props {
@@ -13,6 +14,8 @@ export default function SkillsClient({ skills }: Props) {
   const [displayCount, setDisplayCount] = useState(5);
   const [timeFilter, setTimeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const searchParams = useSearchParams();
+  const isFromOnboarding = searchParams.get("onboarding") === "true";
   const statusPriority = {
     mastered: 1,
     learning: 2,
@@ -32,6 +35,16 @@ export default function SkillsClient({ skills }: Props) {
     <div className="min-h-screen pb-12 bg-background">
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <h1 className="font-bold text-2xl text-foreground">Skills</h1>
+        {isFromOnboarding && (
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4">
+            <h2 className="font-bold text-foreground">Welcome to Lemi! 🎉</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Start by selecting skills you&apos;ve already mastered. You can
+              always update this later.
+            </p>
+          </div>
+        )}
+
         <Filter
           onTimeFilter={(search) => {
             setTimeFilter(search);
