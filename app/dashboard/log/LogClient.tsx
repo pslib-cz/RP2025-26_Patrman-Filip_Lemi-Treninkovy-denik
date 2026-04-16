@@ -25,6 +25,7 @@ import { TofBanner } from "@/components/TofBanner";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import LogGuide from "@/components/LogGuide";
 
 interface Props {
   dictionary: DbSkill[];
@@ -71,6 +72,7 @@ export default function LogClient({
   const [showSavePresetModal, setShowSavePresetModal] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
   const [isRoutineForPreset, setIsRoutineForPreset] = useState(false);
+  const [showLogGuide, setShowLogGuide] = useState(false);
   const userSkillCodes = useMemo(() => {
     return userSkills
       .map((us) => {
@@ -423,12 +425,17 @@ export default function LogClient({
     <div className="min-h-screen pb-12">
       <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
         <div className="gap-2">
-          <h1 className="font-bold text-2xl text-foreground">
-            New Training Session
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            {new Date().toLocaleDateString()}
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="font-bold text-2xl text-foreground">
+                New Training Session
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                {new Date().toLocaleDateString()}
+              </p>
+            </div>
+            <LogGuide />
+          </div>
         </div>
         <div className="flex flex-col gap-1.5">
           <p className="text-base font-bold text-foreground">Add Skill Code</p>
@@ -480,8 +487,10 @@ export default function LogClient({
             to add.
             <br />
             Tip: Type{" "}
-            <span className="text-primary font-mono font-bold">&ldquo;-&rdquo;</span> for
-            time or
+            <span className="text-primary font-mono font-bold">
+              &ldquo;-&rdquo;
+            </span>{" "}
+            for time or
             <span className="text-primary font-mono font-bold ml-1">
               &ldquo;/&rdquo;
             </span>{" "}
