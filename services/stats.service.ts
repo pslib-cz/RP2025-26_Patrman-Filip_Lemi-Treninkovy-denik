@@ -171,11 +171,19 @@ export async function getFrequentSkills(userId: string, timeFilter: string) {
     
     const { data: dict } = await supabase
     .from('user_skills')
-    .select('skills!inner(code, name)')
+    .select('skills!inner(code, name, direction)')
     .eq('user_id', userId)
     .eq('status', 'mastered');
 
-    const nameMap = Object.fromEntries((dict || []).map(s => [s.skills.code, s.skills.name]));
+    const nameMap = Object.fromEntries(
+    (dict || []).map(s => {
+        const key = s.skills.direction 
+        ? s.skills.direction + s.skills.code 
+        : s.skills.code;
+        return [key, { name: s.skills.name, direction: s.skills.direction }];
+    })
+    );
+
 
     
     
@@ -194,10 +202,11 @@ export async function getFrequentSkills(userId: string, timeFilter: string) {
     });
 
     const sortedSkills = Object.entries(nameMap)
-        .map(([code, name]) => ({
+        .map(([code, info]) => ({
             code,
-            name: name as string,
-            count: counts[code] || 0
+            name: info.name,
+            count: counts[code] || 0,
+            direction: info.direction as string | null
         }))
         .sort((a, b) => b.count - a.count);
 

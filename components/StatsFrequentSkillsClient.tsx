@@ -7,6 +7,7 @@ export type SkillStat = {
   code: string;
   name: string;
   count: number;
+  direction: string | null;
 };
 interface Props {
   skills: SkillStat[];
@@ -55,7 +56,7 @@ export default function StatsFrequentSkillsClient({
                     >
                       {skills.map((s) => (
                         <option key={s.code} value={s.code}>
-                          {s.name} ({s.count}x)
+                          {s.name} {s.code} ({s.count}x)
                         </option>
                       ))}
                     </select>
