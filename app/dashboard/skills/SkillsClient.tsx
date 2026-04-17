@@ -33,7 +33,7 @@ export default function SkillsClient({ skills }: Props) {
   weekAgo.setDate(weekAgo.getDate() - 7);
   return (
     <div className="min-h-screen pb-12 bg-background">
-      <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
+      <div className="max-w-2xl md:max-w-5xl mx-auto p-3 pt-4 flex flex-col gap-4">
         <h1 className="font-bold text-2xl text-foreground">Skills</h1>
         {isFromOnboarding && (
           <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4">
@@ -62,7 +62,7 @@ export default function SkillsClient({ skills }: Props) {
           timeFilter={timeFilter}
           statusFilter={statusFilter}
         />
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3">
           {[...skills]
             .filter((skill) =>
               checkSkillSearchMatch(skill, lowerQuery, dateFormatter),

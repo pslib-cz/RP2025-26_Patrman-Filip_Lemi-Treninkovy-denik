@@ -23,7 +23,7 @@ export default function SessionCard({
   notes,
 }: SessionCardProps) {
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-sm border border-border flex flex-col gap-4 max-w-lg hover:shadow-md transition-shadow cursor-pointer">
+    <div className="bg-card rounded-2xl p-4 shadow-sm border border-border flex flex-col gap-4 w-full hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-1">
           <h2 className="font-bold text-foreground">{date}</h2>

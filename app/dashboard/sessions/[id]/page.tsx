@@ -46,8 +46,9 @@ export default async function SessionByIdPage({
 
   return (
     <div className="min-h-screen bg-background pb-12">
-      <div className="max-w-md mx-auto p-4 flex flex-col gap-6 pt-6">
-        <div className="flex items-center gap-3">
+      <div className="p-4 pt-6 md:max-w-5xl md:mx-auto md:p-6 md:pt-8">
+
+        <div className="flex items-center gap-3 mb-6">
           <Link
             href="/dashboard/sessions"
             className="w-10 h-10 border border-border bg-card rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm transition-colors"
@@ -66,75 +67,78 @@ export default async function SessionByIdPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <SessionMetricsCard
-            icon={<Activity className="w-4 h-4" />}
-            value={session.total_difficulty ?? 0}
-            label="Difficulty"
-            className="text-primary"
-          />
+        <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-8">
 
-          <SessionMetricsCard
-            icon={<MoveVertical className="w-4 h-4" />}
-            value={session.total_jumps || 0}
-            label="Jumps"
-            className="text-foreground"
-          />
-
-          <SessionMetricsCard
-            icon={<RotateCcw className="w-4 h-4" />}
-            value={session.total_rounds || 0}
-            label="Rounds"
-            className="text-foreground"
-          />
-
-          <SessionMetricsCard
-            icon={<Target className="w-4 h-4" />}
-            value={session.total_routines || 0}
-            label="Routines"
-            className="text-foreground"
-          />
-        </div>
-
-        <div className="bg-card border border-border rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-muted-foreground">
-              Session Rating
-            </span>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`w-5 h-5 ${
-                    star <= (session.rating || 0)
-                      ? "fill-primary text-primary"
-                      : "fill-muted text-border"
-                  }`}
-                />
-              ))}
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-3">
+              <SessionMetricsCard
+                icon={<Activity className="w-4 h-4" />}
+                value={session.total_difficulty ?? 0}
+                label="Difficulty"
+                className="text-primary"
+              />
+              <SessionMetricsCard
+                icon={<MoveVertical className="w-4 h-4" />}
+                value={session.total_jumps || 0}
+                label="Jumps"
+                className="text-foreground"
+              />
+              <SessionMetricsCard
+                icon={<RotateCcw className="w-4 h-4" />}
+                value={session.total_rounds || 0}
+                label="Rounds"
+                className="text-foreground"
+              />
+              <SessionMetricsCard
+                icon={<Target className="w-4 h-4" />}
+                value={session.total_routines || 0}
+                label="Routines"
+                className="text-foreground"
+              />
             </div>
+
+            <div className="bg-card border border-border rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold text-muted-foreground">
+                  Session Rating
+                </span>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-5 h-5 ${
+                        star <= (session.rating || 0)
+                          ? "fill-primary text-primary"
+                          : "fill-muted text-border"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              {session.notes && (
+                <div className="mt-2 pt-3 border-t border-border">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                    Notes
+                  </span>
+                  <p className="text-sm text-foreground font-medium italic">
+                    &quot;{session.notes}&quot;
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <DeleteSessionForm
+              deleteAction={async () => {
+                "use server";
+                await deleteSession(session.id);
+                redirect("/dashboard/sessions");
+              }}
+            />
           </div>
 
-          {session.notes && (
-            <div className="mt-2 pt-3 border-t border-border">
-              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
-                Notes
-              </span>
-              <p className="text-sm text-foreground font-medium italic">
-                &quot;{session.notes}&quot;
-              </p>
-            </div>
-          )}
-        </div>
+          <SessionDetailRounds rounds={rounds} />
 
-        <SessionDetailRounds rounds={rounds} />
-        <DeleteSessionForm 
-          deleteAction={async () => {
-            "use server";
-            await deleteSession(session.id);
-            redirect("/dashboard/sessions");
-          }} 
-        />
+        </div>
       </div>
     </div>
   );

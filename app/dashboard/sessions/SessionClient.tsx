@@ -36,7 +36,7 @@ export default function SessionClient({ sessions }: Props) {
   const displayedSessions = filteredSessions.slice(0, displayCount);
   return (
     <div className="pb-14 min-h-screen bg-background">
-      <div className="max-w-md mx-auto w-full pt-6 px-4 flex flex-col gap-4">
+      <div className="max-w-5xl mx-auto w-full pt-6 px-4 flex flex-col gap-4">
         <h1 className="font-bold text-2xl text-foreground">
           Training Sessions
         </h1>
@@ -53,7 +53,7 @@ export default function SessionClient({ sessions }: Props) {
             searchQuery={searchQuery}
             timeFilter={timeFilter}
           />
-          <div className="flex flex-col gap-4 mt-6">
+          <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2">
             {displayedSessions.map((rawSession) => {
               const dateObj = new Date(rawSession.date);
 
@@ -88,7 +88,7 @@ export default function SessionClient({ sessions }: Props) {
             {displayCount < filteredSessions.length && (
               <button
                 onClick={() => setDisplayCount(displayCount + 10)}
-                className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground placeholder:text-muted-foreground shadow-sm transition-all"
+                className="w-full bg-card border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground shadow-sm transition-all md:col-span-2"
               >
                 Load More
               </button>

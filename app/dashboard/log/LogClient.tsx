@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { v4 as uuidv4 } from "uuid";
 import SmartKeyboard from "@/components/SmartKeyboard";
@@ -98,6 +98,21 @@ export default function LogClient({
   const [isSaving, setIsSaving] = useState(false);
   const [skillSuggestion, setSkillSuggestion] = useState<string>("");
   const [savedRounds, setSavedRounds] = useState<SavedRound[]>(initialSavedRounds);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window === "undefined" || window.matchMedia("(max-width: 767px)").matches,
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) inputRef.current?.focus();
+  }, [isMobile]);
 
   const {
     showSavePresetModal,
@@ -125,6 +140,21 @@ export default function LogClient({
       )
       .sort((a, b) => b.score - a.score);
   }, [dictionary, userSkills, skillScores]);
+
+  const computeSuggestion = (value: string) => {
+    if (!value.length) { setSkillSuggestion(""); return; }
+    const { baseCode, direction } = parseSkillInput(value);
+    if (baseCode.length > 0) {
+      const match = userSkillCodes.find(
+        (item) =>
+          item.code.startsWith(baseCode) &&
+          (!direction || item.direction === direction),
+      );
+      setSkillSuggestion(match ? match.code.substring(baseCode.length) : "");
+    } else {
+      setSkillSuggestion("");
+    }
+  };
 
   const addNewSkill = (inputCode: string) => {
     const { skill, error } = resolveSkill(inputCode, dictionary, userSkills);
@@ -175,7 +205,11 @@ export default function LogClient({
       }
       addNewSkill(skillSuggestion ? currentInput + skillSuggestion : currentInput);
     } else if (key === "BACKSPACE") {
-      setCurrentInput((prev) => prev.slice(0, -1));
+      setCurrentInput((prev) => {
+        const next = prev.slice(0, -1);
+        computeSuggestion(next);
+        return next;
+      });
     } else if (["2x", "3x", "4x", "5x"].includes(key)) {
       const multiplier = Number.parseInt(key[0]);
       setCurrentRoundSkills((prevSkills) => {
@@ -189,19 +223,7 @@ export default function LogClient({
     } else {
       const newInput = currentInput + key;
       setCurrentInput(newInput);
-      if (newInput.length > 0) {
-        const { baseCode: baseInput, direction: expectedDir } = parseSkillInput(newInput);
-        if (baseInput.length > 0) {
-          const match = userSkillCodes.find(
-            (item) =>
-              item.code.startsWith(baseInput) &&
-              (!expectedDir || item.direction === expectedDir),
-          );
-          setSkillSuggestion(match ? match.code.substring(baseInput.length) : "");
-        } else {
-          setSkillSuggestion("");
-        }
-      }
+      computeSuggestion(newInput);
     }
   };
 
@@ -209,6 +231,19 @@ export default function LogClient({
     setErrorMsg(null);
     if (showTofInput) return handleTofKey(key);
     handleSkillKey(key);
+  };
+
+  const handleDesktopInputChange = (value: string) => {
+    setErrorMsg(null);
+    setCurrentInput(value);
+    computeSuggestion(value);
+  };
+
+  const handleDesktopKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      handleKeyPress("SPACE");
+    }
   };
 
   const handleConfirmRound = (roundData: Partial<Round>) => {
@@ -352,288 +387,309 @@ export default function LogClient({
 
   return (
     <div className="min-h-screen pb-12">
-      <div className="max-w-md mx-auto p-3 pt-4 flex flex-col gap-4">
-        <div className="gap-2">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="font-bold text-2xl text-foreground">
-                New Training Session
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                {new Date().toLocaleDateString()}
-              </p>
-            </div>
-            <LogGuide />
-          </div>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <p className="text-base font-bold text-foreground">Add Skill Code</p>
-          <div className="flex gap-2">
-            <div
-              onClick={() => {
-                if (currentInput.length > 0) {
-                  addNewSkill(currentInput + skillSuggestion);
-                }
-              }}
-              className="flex-1 px-3 py-2 bg-card border border-border rounded-xl font-mono text-base flex items-center overflow-hidden"
-            >
-              {currentInput.length === 0 ? (
-                <span className="text-muted-foreground text-sm">
-                  e.g. 41/ or 8-1/
-                </span>
-              ) : (
-                <div className="whitespace-pre">
-                  <span className="text-foreground">{currentInput}</span>
-                  <span className="text-muted-foreground animate-pulse">
-                    {skillSuggestion}
-                  </span>
-                </div>
-              )}
+      <div className="p-3 pt-4 md:max-w-5xl md:mx-auto md:p-6 md:pt-8">
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-8 md:items-start">
+
+          <div className="flex flex-col gap-4 md:sticky md:top-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="font-bold text-2xl text-foreground">
+                  New Training Session
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  {new Date().toLocaleDateString()}
+                </p>
+              </div>
+              <LogGuide />
             </div>
 
-            <button
-              onClick={() => handleKeyPress("SPACE")}
-              className="w-10 h-10 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors shrink-0"
-            >
-              <Zap className="w-4 h-4 fill-white" />
-            </button>
-          </div>
-          {errorMsg && (
-            <p className="text-sm font-semibold text-destructive animate-pulse">
-              {errorMsg}
-            </p>
-          )}
-          <p className="text-[10px] text-muted-foreground leading-relaxed">
-            Press{" "}
-            <span className="font-bold text-foreground bg-muted px-1 rounded">
-              Space
-            </span>{" "}
-            or
-            <span className="font-bold text-foreground bg-muted px-1 rounded ml-1">
-              Enter
-            </span>{" "}
-            to add.
-            <br />
-            Tip: Type{" "}
-            <span className="text-primary font-mono font-bold">
-              &ldquo;-&rdquo;
-            </span>{" "}
-            for time or
-            <span className="text-primary font-mono font-bold ml-1">
-              &ldquo;/&rdquo;
-            </span>{" "}
-            for straight jump.
-          </p>
-        </div>
-        {showTofInput && (
-          <TofBanner
-            tofValue={tofValue}
-            setTofValue={setTofValue}
-            onSave={confirmTof}
-            onClose={() => setShowTofInput(false)}
-          />
-        )}
-        {currentRoundSkills.length > 0 && (
-          <CurrentRoundBoard
-            skills={currentRoundSkills}
-            onConfirm={handleConfirmRound}
-            isEditing={!!editingRoundId}
-            onCancelEdit={() => {
-              setEditingRoundId(null);
-              setCurrentRoundSkills([]);
-            }}
-            onRemoveSkill={handleRemoveSkill}
-          />
-        )}
-        {rounds.length === 0 &&
-          currentRoundSkills.length === 0 &&
-          userSkills.length === 0 && (
-            <div className="text-center p-8 bg-muted/20 rounded-3xl border-2 border-dashed border-border mb-4 flex flex-col items-center">
-              <Image
-                src="/Lemi-nobg.svg"
-                alt="Lemi Mascot"
-                width={100}
-                height={100}
-              />
-              <div className="space-y-2">
-                <p className="font-bold text-lg text-foreground">
-                  Ready for your first jump?
-                </p>
-                <p className="text-sm text-muted-foreground max-w-[280px] mx-auto">
-                  Try typing a code like{" "}
-                  <span className="font-mono font-bold text-primary">B4-o</span>{" "}
-                  using the smart keyboard below.
-                </p>
-                <p className="text-xs text-muted-foreground bg-muted/50 py-2 px-3 rounded-xl border border-border/50">
-                  Confirm by pressing <span className="font-bold">Space</span>{" "}
-                  or tapping the{" "}
-                  <span className="text-primary font-bold">orange button</span>{" "}
-                  next to the input.
-                </p>
-              </div>
-            </div>
-          )}
-        {(savedRounds.length > 0 || currentRoundSkills.length > 0) && (
-          <div className="relative">
-            <button
-              onClick={() => setShowPresets((prev) => !prev)}
-              className="flex items-center justify-between w-full px-3 py-2 bg-card border border-border rounded-xl hover:bg-muted/50 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-primary" />
-                <span className="text-sm font-bold">
-                  Presets
-                  {savedRounds.length > 0 && (
-                    <span className="ml-1.5 text-xs font-normal text-muted-foreground">
-                      ({savedRounds.length})
-                    </span>
-                  )}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                {currentRoundSkills.length > 0 && !editingRoundId && (
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowSavePresetModal(true);
-                    }}
-                    className="text-xs font-bold text-primary flex items-center gap-1 hover:opacity-80"
-                  >
-                    <Save className="w-3 h-3" />
-                    Save
-                  </span>
-                )}
-                <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
-                    showPresets ? "rotate-180" : ""
-                  }`}
-                />
-              </div>
-            </button>
-
-            <div
-              className={`absolute top-full left-0 right-0 mt-2 z-50 flex flex-col gap-1.5 p-2 bg-card border border-border rounded-xl shadow-xl transition-all duration-200 ease-in-out ${
-                showPresets
-                  ? "opacity-100 translate-y-0 pointer-events-auto visible"
-                  : "opacity-0 -translate-y-2 pointer-events-none invisible"
-              }`}
-            >
-              {savedRounds.length > 0 ? (
-                savedRounds.map((preset) => (
-                  <div
-                    key={preset.id}
-                    onClick={() => applyPreset(preset)}
-                    className="flex items-center justify-between px-3 py-2.5 bg-card border border-border rounded-xl cursor-pointer hover:bg-muted/50 transition-colors group"
-                  >
-                    <div className="flex items-center gap-2">
-                      {preset.is_routine && (
-                        <Star className="w-3 h-3 text-orange-500 fill-orange-500" />
-                      )}
-                      <span className="text-sm font-medium">{preset.name}</span>
-                      <span className="text-[10px] text-muted-foreground font-mono">
-                        {preset.difficulty.toFixed(1)}
+            <div className="flex flex-col gap-1.5">
+              <p className="text-base font-bold text-foreground">Add Skill Code</p>
+              <div className="flex gap-2">
+                <div className="flex-1 relative overflow-hidden rounded-xl bg-card border border-border">
+                  {currentInput.length > 0 && (
+                    <div className="absolute inset-0 px-3 py-2 pointer-events-none font-mono text-base flex items-center">
+                      <span className="text-transparent whitespace-pre select-none">
+                        {currentInput}
+                      </span>
+                      <span className="text-muted-foreground animate-pulse whitespace-pre">
+                        {skillSuggestion}
                       </span>
                     </div>
-                    <button
-                      onClick={(e) => handleDeletePreset(preset.id, e)}
-                      className="p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 text-center">
-                  <p className="text-xs text-muted-foreground italic">
-                    No presets yet. Save your current round to see it here!
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {showSavePresetModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-sm bg-card border border-border rounded-3xl shadow-2xl p-6 flex flex-col gap-5 animate-in zoom-in-95 duration-200">
-              <div className="space-y-1">
-                <h3 className="text-xl font-bold">Save as Preset</h3>
-                <p className="text-sm text-muted-foreground">
-                  Give this round a name to use it later.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-bold ml-1">Name</label>
+                  )}
                   <input
-                    autoFocus
+                    ref={inputRef}
                     type="text"
-                    value={newPresetName}
-                    onChange={(e) => setNewPresetName(e.target.value)}
-                    placeholder="e.g. My Routine 2024"
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+                    value={currentInput}
+                    readOnly={isMobile}
+                    onChange={(e) => handleDesktopInputChange(e.target.value)}
+                    onKeyDown={handleDesktopKeyDown}
+                    placeholder="e.g. 41/ or 8-1/"
+                    className="w-full px-3 py-2 bg-transparent font-mono text-base text-foreground placeholder:text-muted-foreground placeholder:text-sm focus:outline-none"
                   />
                 </div>
+                <button
+                  onClick={() => handleKeyPress("SPACE")}
+                  className="w-10 h-10 bg-primary text-white hover:bg-accent rounded-xl flex items-center justify-center transition-colors shrink-0"
+                >
+                  <Zap className="w-4 h-4 fill-white" />
+                </button>
+              </div>
+              {errorMsg && (
+                <p className="text-sm font-semibold text-destructive animate-pulse">
+                  {errorMsg}
+                </p>
+              )}
+              <p className="text-[10px] text-muted-foreground leading-relaxed md:hidden">
+                Press{" "}
+                <span className="font-bold text-foreground bg-muted px-1 rounded">Space</span>{" "}
+                or{" "}
+                <span className="font-bold text-foreground bg-muted px-1 rounded">Enter</span>{" "}
+                to add.
+                <br />
+                Tip: Type{" "}
+                <span className="text-primary font-mono font-bold">&ldquo;-&rdquo;</span>{" "}
+                for time or{" "}
+                <span className="text-primary font-mono font-bold ml-1">&ldquo;/&rdquo;</span>{" "}
+                for straight jump.
+              </p>
+              <p className="hidden md:block text-[10px] text-muted-foreground leading-relaxed">
+                Press{" "}
+                <kbd className="font-bold text-foreground bg-muted px-1 rounded">Space</kbd>{" "}
+                or{" "}
+                <kbd className="font-bold text-foreground bg-muted px-1 rounded">Enter</kbd>{" "}
+                to add. Prefix{" "}
+                <span className="font-mono font-bold text-foreground">F</span>/{" "}
+                <span className="font-mono font-bold text-foreground">B</span>{" "}
+                for direction. Type{" "}
+                <span className="text-primary font-mono font-bold">&ldquo;-&rdquo;</span>{" "}
+                for time of flight.
+              </p>
+            </div>
 
-                <label className="flex items-center gap-3 p-3 bg-muted/30 rounded-2xl border border-border/50 cursor-pointer hover:bg-muted/50 transition-colors group">
-                  <div className="relative flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={isRoutineForPreset}
-                      onChange={(e) => setIsRoutineForPreset(e.target.checked)}
-                      className="w-5 h-5 rounded-md border-border text-primary focus:ring-primary/20 accent-primary cursor-pointer"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-bold">Show on Profile</span>
-                    <span className="text-[10px] text-muted-foreground">
-                      Mark this as your official routine.
+            {showTofInput && (
+              <TofBanner
+                tofValue={tofValue}
+                setTofValue={setTofValue}
+                onSave={confirmTof}
+                onClose={() => setShowTofInput(false)}
+              />
+            )}
+
+            {currentRoundSkills.length > 0 && (
+              <CurrentRoundBoard
+                skills={currentRoundSkills}
+                onConfirm={handleConfirmRound}
+                isEditing={!!editingRoundId}
+                onCancelEdit={() => {
+                  setEditingRoundId(null);
+                  setCurrentRoundSkills([]);
+                }}
+                onRemoveSkill={handleRemoveSkill}
+              />
+            )}
+
+            {(savedRounds.length > 0 || currentRoundSkills.length > 0) && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowPresets((prev) => !prev)}
+                  className="flex items-center justify-between w-full px-3 py-2 bg-card border border-border rounded-xl hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold">
+                      Presets
+                      {savedRounds.length > 0 && (
+                        <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                          ({savedRounds.length})
+                        </span>
+                      )}
                     </span>
                   </div>
-                </label>
-              </div>
+                  <div className="flex items-center gap-2">
+                    {currentRoundSkills.length > 0 && !editingRoundId && (
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowSavePresetModal(true);
+                        }}
+                        className="text-xs font-bold text-primary flex items-center gap-1 hover:opacity-80"
+                      >
+                        <Save className="w-3 h-3" />
+                        Save
+                      </span>
+                    )}
+                    <ChevronDown
+                      className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+                        showPresets ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowSavePresetModal(false)}
-                  className="flex-1 py-3 text-sm font-bold text-muted-foreground hover:bg-muted rounded-2xl transition-colors"
+                <div
+                  className={`absolute top-full left-0 right-0 mt-2 z-50 flex flex-col gap-1.5 p-2 bg-card border border-border rounded-xl shadow-xl transition-all duration-200 ease-in-out ${
+                    showPresets
+                      ? "opacity-100 translate-y-0 pointer-events-auto visible"
+                      : "opacity-0 -translate-y-2 pointer-events-none invisible"
+                  }`}
                 >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSavePreset}
-                  disabled={!newPresetName.trim() || isSavingPreset}
-                  className="flex-1 py-3 bg-primary text-white text-sm font-bold rounded-2xl hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
-                >
-                  {isSavingPreset ? (
-                    "Saving..."
+                  {savedRounds.length > 0 ? (
+                    savedRounds.map((preset) => (
+                      <div
+                        key={preset.id}
+                        onClick={() => applyPreset(preset)}
+                        className="flex items-center justify-between px-3 py-2.5 bg-card border border-border rounded-xl cursor-pointer hover:bg-muted/50 transition-colors group"
+                      >
+                        <div className="flex items-center gap-2">
+                          {preset.is_routine && (
+                            <Star className="w-3 h-3 text-orange-500 fill-orange-500" />
+                          )}
+                          <span className="text-sm font-medium">{preset.name}</span>
+                          <span className="text-[10px] text-muted-foreground font-mono">
+                            {preset.difficulty.toFixed(1)}
+                          </span>
+                        </div>
+                        <button
+                          onClick={(e) => handleDeletePreset(preset.id, e)}
+                          className="p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))
                   ) : (
-                    <>
-                      <Save className="w-4 h-4" /> Save
-                    </>
+                    <div className="p-4 text-center">
+                      <p className="text-xs text-muted-foreground italic">
+                        No presets yet. Save your current round to see it here!
+                      </p>
+                    </div>
                   )}
-                </button>
+                </div>
               </div>
+            )}
+
+            <div className="md:hidden">
+              <SmartKeyboard onKeyPress={handleKeyPress} />
             </div>
           </div>
-        )}
+          <div className="flex flex-col gap-4">
+            {rounds.length === 0 &&
+              currentRoundSkills.length === 0 &&
+              userSkills.length === 0 && (
+                <div className="text-center p-8 bg-muted/20 rounded-3xl border-2 border-dashed border-border flex flex-col items-center">
+                  <Image
+                    src="/Lemi-nobg.svg"
+                    alt="Lemi Mascot"
+                    width={100}
+                    height={100}
+                  />
+                  <div className="space-y-2">
+                    <p className="font-bold text-lg text-foreground">
+                      Ready for your first jump?
+                    </p>
+                    <p className="text-sm text-muted-foreground max-w-[280px] mx-auto">
+                      Try typing a code like{" "}
+                      <span className="font-mono font-bold text-primary">B4-o</span>{" "}
+                      using the keyboard.
+                    </p>
+                    <p className="text-xs text-muted-foreground bg-muted/50 py-2 px-3 rounded-xl border border-border/50 md:hidden">
+                      Confirm by pressing <span className="font-bold">Space</span>{" "}
+                      or tapping the{" "}
+                      <span className="text-primary font-bold">orange button</span>.
+                    </p>
+                    <p className="hidden md:block text-xs text-muted-foreground bg-muted/50 py-2 px-3 rounded-xl border border-border/50">
+                      Confirm by pressing{" "}
+                      <kbd className="font-bold">Space</kbd> or{" "}
+                      <kbd className="font-bold">Enter</kbd>.
+                    </p>
+                  </div>
+                </div>
+              )}
 
-        <SmartKeyboard onKeyPress={handleKeyPress} />
+            <CopyCheckButton
+              onFinishSession={handleFinishSession}
+              onDuplicateRound={handleDuplicateRound}
+            />
 
-        <CopyCheckButton
-          onFinishSession={handleFinishSession}
-          onDuplicateRound={handleDuplicateRound}
-        />
-        {rounds.length > 0 && (
-          <LoggedRoundsList
-            rounds={rounds}
-            onDeleteRound={handleDeleteRound}
-            onEditRound={handleEditRound}
-            editingRoundId={editingRoundId}
-          />
-        )}
+            {rounds.length > 0 && (
+              <LoggedRoundsList
+                rounds={rounds}
+                onDeleteRound={handleDeleteRound}
+                onEditRound={handleEditRound}
+                editingRoundId={editingRoundId}
+              />
+            )}
+          </div>
+
+        </div>
       </div>
+
+      {showSavePresetModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-sm bg-card border border-border rounded-3xl shadow-2xl p-6 flex flex-col gap-5 animate-in zoom-in-95 duration-200">
+            <div className="space-y-1">
+              <h3 className="text-xl font-bold">Save as Preset</h3>
+              <p className="text-sm text-muted-foreground">
+                Give this round a name to use it later.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold ml-1">Name</label>
+                <input
+                  autoFocus
+                  type="text"
+                  value={newPresetName}
+                  onChange={(e) => setNewPresetName(e.target.value)}
+                  placeholder="e.g. My Routine 2024"
+                  className="w-full px-4 py-3 bg-muted/50 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+                />
+              </div>
+
+              <label className="flex items-center gap-3 p-3 bg-muted/30 rounded-2xl border border-border/50 cursor-pointer hover:bg-muted/50 transition-colors group">
+                <div className="relative flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={isRoutineForPreset}
+                    onChange={(e) => setIsRoutineForPreset(e.target.checked)}
+                    className="w-5 h-5 rounded-md border-border text-primary focus:ring-primary/20 accent-primary cursor-pointer"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Show on Profile</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    Mark this as your official routine.
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSavePresetModal(false)}
+                className="flex-1 py-3 text-sm font-bold text-muted-foreground hover:bg-muted rounded-2xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSavePreset}
+                disabled={!newPresetName.trim() || isSavingPreset}
+                className="flex-1 py-3 bg-primary text-white text-sm font-bold rounded-2xl hover:bg-primary/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+              >
+                {isSavingPreset ? (
+                  "Saving..."
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" /> Save
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
