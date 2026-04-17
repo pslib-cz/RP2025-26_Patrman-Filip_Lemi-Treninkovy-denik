@@ -14,11 +14,8 @@ import {
 import { CurrentRoundBoard } from "@/components/CurrentRoundBoard";
 import { CopyCheckButton } from "@/components/copycheck-button";
 import { LoggedRoundsList } from "@/components/LoggedRoundsList";
-import {
-  finishTrainingSession,
-  saveRound,
-  deleteSavedRound,
-} from "@/services/log.service";
+import { finishTrainingSession } from "@/services/log.service";
+import { usePresetModal } from "@/app/hooks/usePresetModal";
 import { Zap, Save, X, Star, ChevronDown } from "lucide-react";
 import { FinishSessionScreen } from "@/components/FinishSessionScreen";
 import { TofBanner } from "@/components/TofBanner";
@@ -33,6 +30,7 @@ interface Props {
   skillScores: Record<string, number>;
   initialSavedRounds: SavedRound[];
 }
+
 function parseSkillInput(input: string) {
   let baseCode = input;
   let direction: string | null = null;
@@ -42,6 +40,39 @@ function parseSkillInput(input: string) {
   }
   return { baseCode, direction };
 }
+
+function resolveSkill(
+  code: string,
+  dictionary: DbSkill[],
+  userSkills?: UserSkills[],
+): { skill: DbSkill | null; error?: string } {
+  const { baseCode, direction } = parseSkillInput(code);
+  const matches = dictionary.filter((s) => s.code === baseCode);
+
+  if (!matches.length) return { skill: null, error: "Skill code not found in dictionary" };
+
+  if (direction) {
+    const exact = matches.find((s) => s.direction === direction);
+    if (!exact) return { skill: null, error: `Skill with direction ${direction} not found` };
+    return { skill: exact };
+  }
+
+  if (matches.length > 1 && userSkills) {
+    const mastered = matches.filter((ms) =>
+      userSkills.some(
+        (us) =>
+          us.skill_id === ms.id &&
+          (us.status === "mastered" || us.status === "learning"),
+      ),
+    );
+    if (mastered.length === 1) return { skill: mastered[0] };
+  }
+
+  return { skill: matches[0] };
+}
+
+const sumDifficulty = (skills: Skill[]) =>
+  skills.reduce((acc, s) => acc + s.difficulty, 0);
 
 export default function LogClient({
   dictionary,
@@ -66,21 +97,26 @@ export default function LogClient({
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [skillSuggestion, setSkillSuggestion] = useState<string>("");
-  const [savedRounds, setSavedRounds] =
-    useState<SavedRound[]>(initialSavedRounds);
-  const [isSavingPreset, setIsSavingPreset] = useState(false);
-  const [showSavePresetModal, setShowSavePresetModal] = useState(false);
-  const [newPresetName, setNewPresetName] = useState("");
-  const [isRoutineForPreset, setIsRoutineForPreset] = useState(false);
-  const [showLogGuide, setShowLogGuide] = useState(false);
+  const [savedRounds, setSavedRounds] = useState<SavedRound[]>(initialSavedRounds);
+
+  const {
+    showSavePresetModal,
+    setShowSavePresetModal,
+    newPresetName,
+    setNewPresetName,
+    isRoutineForPreset,
+    setIsRoutineForPreset,
+    isSavingPreset,
+    handleSavePreset,
+    handleDeletePreset,
+  } = usePresetModal(currentRoundSkills, setSavedRounds);
+
   const userSkillCodes = useMemo(() => {
     return userSkills
       .map((us) => {
         const found = dictionary.find((d) => d.id === us.skill_id);
         if (!found) return null;
-
         const score = skillScores[found.code] || 0;
-
         return { code: found.code, direction: found.direction, score: score };
       })
       .filter(
@@ -91,175 +127,121 @@ export default function LogClient({
   }, [dictionary, userSkills, skillScores]);
 
   const addNewSkill = (inputCode: string) => {
-    const { baseCode, direction } = parseSkillInput(inputCode);
-    const matchingSkills = dictionary.filter((s) => s.code === baseCode);
+    const { skill, error } = resolveSkill(inputCode, dictionary, userSkills);
+    if (error) { setErrorMsg(error); return; }
+    if (!skill) return;
 
-    if (matchingSkills.length === 0) {
-      setErrorMsg("Skill code not found in dictionary");
-      return;
-    }
-
-    let foundSkill = matchingSkills[0];
-
-    if (direction) {
-      const exactMatch = matchingSkills.find((s) => s.direction === direction);
-      if (exactMatch) {
-        foundSkill = exactMatch;
-      } else {
-        setErrorMsg(`Skill with direction ${direction} not found`);
-        return;
-      }
-    } else if (matchingSkills.length > 1) {
-      const masteredVariants = matchingSkills.filter((ms) =>
-        userSkills.some(
-          (us) =>
-            us.skill_id === ms.id &&
-            (us.status === "mastered" || us.status === "learning"),
-        ),
-      );
-
-      if (masteredVariants.length === 1) {
-        foundSkill = masteredVariants[0];
-      }
-    }
-
-    const newSkill: Skill = {
-      id: uuidv4(),
-      dictionary_id: foundSkill.id,
-      fig_code: (foundSkill.direction || "") + foundSkill.code,
-      difficulty: foundSkill.difficulty_value,
-    };
-
-    setCurrentRoundSkills((prev) => [...prev, newSkill]);
+    setCurrentRoundSkills((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        dictionary_id: skill.id,
+        fig_code: (skill.direction || "") + skill.code,
+        difficulty: skill.difficulty_value,
+      },
+    ]);
     setCurrentInput("");
     setSkillSuggestion("");
   };
 
   const confirmTof = () => {
     const tofNum = parseFloat(tofValue);
-
-    const newSkill: Skill = {
-      id: uuidv4(),
-      fig_code: "-",
-      difficulty: 0,
-      tof: tofNum,
-    };
-
-    setCurrentRoundSkills((prev) => [...prev, newSkill]);
+    setCurrentRoundSkills((prev) => [
+      ...prev,
+      { id: uuidv4(), fig_code: "-", difficulty: 0, tof: tofNum },
+    ]);
     setShowTofInput(false);
     setTofValue("");
   };
 
-  const handleKeyPress = (key: string) => {
-    setErrorMsg(null);
-    if (showTofInput) {
-      if (key === "SPACE") {
-        confirmTof();
-      } else if (key === "BACKSPACE") {
-        setTofValue((prev) => prev.slice(0, -1));
-      } else if (!Number.isNaN(Number(key)) || key === ".") {
-        setTofValue((prev) => prev + key);
-      }
-      return;
+  const handleTofKey = (key: string) => {
+    if (key === "SPACE") {
+      confirmTof();
+    } else if (key === "BACKSPACE") {
+      setTofValue((prev) => prev.slice(0, -1));
+    } else if (!Number.isNaN(Number(key)) || key === ".") {
+      setTofValue((prev) => prev + key);
     }
+  };
 
+  const handleSkillKey = (key: string) => {
     if (key === "SPACE") {
       if (currentInput.trim() === "") return;
-
       if (currentInput === "-" && currentRoundSkills.length === 0) {
         setShowTofInput(true);
         setTofValue("");
         setCurrentInput("");
         return;
       }
-
-      const finalCode = skillSuggestion
-        ? currentInput + skillSuggestion
-        : currentInput;
-      addNewSkill(finalCode);
+      addNewSkill(skillSuggestion ? currentInput + skillSuggestion : currentInput);
     } else if (key === "BACKSPACE") {
       setCurrentInput((prev) => prev.slice(0, -1));
     } else if (["2x", "3x", "4x", "5x"].includes(key)) {
       const multiplier = Number.parseInt(key[0]);
-
       setCurrentRoundSkills((prevSkills) => {
         if (prevSkills.length === 0) return prevSkills;
-
         const copiesToAdd: Skill[] = [];
-
         for (let i = 0; i < multiplier - 1; i++) {
-          const duplicatedSkills = prevSkills.map((skill) => ({
-            ...skill,
-            id: uuidv4(),
-            dictionary_id: skill.dictionary_id,
-          }));
-          copiesToAdd.push(...duplicatedSkills);
+          copiesToAdd.push(...prevSkills.map((skill) => ({ ...skill, id: uuidv4() })));
         }
         return [...prevSkills, ...copiesToAdd];
       });
     } else {
       const newInput = currentInput + key;
       setCurrentInput(newInput);
-
       if (newInput.length > 0) {
-        const { baseCode: baseInput, direction: expectedDir } =
-          parseSkillInput(newInput);
-
+        const { baseCode: baseInput, direction: expectedDir } = parseSkillInput(newInput);
         if (baseInput.length > 0) {
-          const match = userSkillCodes.find((item) => {
-            const matchesCode = item.code.startsWith(baseInput);
-            const matchesDir = !expectedDir || item.direction === expectedDir;
-            return matchesCode && matchesDir;
-          });
-
-          if (match) {
-            const reminder = match.code.substring(baseInput.length);
-            setSkillSuggestion(reminder);
-          } else {
-            setSkillSuggestion("");
-          }
+          const match = userSkillCodes.find(
+            (item) =>
+              item.code.startsWith(baseInput) &&
+              (!expectedDir || item.direction === expectedDir),
+          );
+          setSkillSuggestion(match ? match.code.substring(baseInput.length) : "");
         } else {
           setSkillSuggestion("");
         }
       }
     }
   };
+
+  const handleKeyPress = (key: string) => {
+    setErrorMsg(null);
+    if (showTofInput) return handleTofKey(key);
+    handleSkillKey(key);
+  };
+
   const handleConfirmRound = (roundData: Partial<Round>) => {
     if (currentRoundSkills.length === 0) return;
 
     if (editingRoundId) {
       setRounds((prev) =>
-        prev.map((round) => {
-          if (round.id === editingRoundId) {
-            return {
-              ...round,
-              skills: currentRoundSkills,
-              total_difficulty: currentRoundSkills.reduce(
-                (acc, skill) => acc + skill.difficulty,
-                0,
-              ),
-              is_routine: roundData.is_routine,
-              routine_type: roundData.routine_type,
-              tof: roundData.tof,
-            };
-          }
-          return round;
-        }),
+        prev.map((round) =>
+          round.id === editingRoundId
+            ? {
+                ...round,
+                skills: currentRoundSkills,
+                total_difficulty: sumDifficulty(currentRoundSkills),
+                is_routine: roundData.is_routine,
+                routine_type: roundData.routine_type,
+                tof: roundData.tof,
+              }
+            : round,
+        ),
       );
       setEditingRoundId(null);
     } else {
-      const newRound: Round = {
-        id: uuidv4(),
-        skills: currentRoundSkills,
-        total_difficulty: currentRoundSkills.reduce(
-          (acc, skill) => acc + skill.difficulty,
-          0,
-        ),
-        is_routine: roundData.is_routine,
-        routine_type: roundData.routine_type,
-        tof: roundData.tof,
-      };
-      setRounds((prev) => [...prev, newRound]);
+      setRounds((prev) => [
+        ...prev,
+        {
+          id: uuidv4(),
+          skills: currentRoundSkills,
+          total_difficulty: sumDifficulty(currentRoundSkills),
+          is_routine: roundData.is_routine,
+          routine_type: roundData.routine_type,
+          tof: roundData.tof,
+        },
+      ]);
     }
 
     setCurrentRoundSkills([]);
@@ -282,64 +264,25 @@ export default function LogClient({
     if (rounds.length === 0) return;
     const lastRound = rounds.at(-1);
     if (!lastRound) return;
-    const skillsToDuplicate = lastRound.skills.map((skill) => ({
-      ...skill,
-      id: uuidv4(),
-    }));
-    setCurrentRoundSkills((prev) => [...prev, ...skillsToDuplicate]);
-  };
-
-  const handleSavePreset = async () => {
-    if (!newPresetName.trim() || currentRoundSkills.length === 0) return;
-    setIsSavingPreset(true);
-
-    const figString = currentRoundSkills.map((s) => s.fig_code).join(" ");
-    const totalDiff = currentRoundSkills.reduce(
-      (acc, s) => acc + s.difficulty,
-      0,
-    );
-
-    const result = await saveRound(
-      newPresetName,
-      figString,
-      totalDiff,
-      isRoutineForPreset,
-    );
-
-    if (result.success && result.data) {
-      setSavedRounds((prev) => [result.data as SavedRound, ...prev]);
-      setShowSavePresetModal(false);
-      setNewPresetName("");
-      setIsRoutineForPreset(false);
-      toast.success("Preset saved!");
-    } else {
-      toast.error("Failed to save preset");
-    }
-    setIsSavingPreset(false);
+    setCurrentRoundSkills((prev) => [
+      ...prev,
+      ...lastRound.skills.map((skill) => ({ ...skill, id: uuidv4() })),
+    ]);
   };
 
   const applyPreset = (preset: SavedRound) => {
-    const codes = preset.fig_string.split(" ");
     const newSkills: Skill[] = [];
     const missingCodes: string[] = [];
 
-    for (const code of codes) {
+    for (const code of preset.fig_string.split(" ")) {
       if (code === "-") continue;
-
-      const { baseCode, direction } = parseSkillInput(code);
-      const foundSkills = dictionary.filter((s) => s.code === baseCode);
-
-      let match = foundSkills[0];
-      if (direction) {
-        match = foundSkills.find((s) => s.direction === direction) || match;
-      }
-
-      if (match) {
+      const { skill } = resolveSkill(code, dictionary);
+      if (skill) {
         newSkills.push({
           id: uuidv4(),
-          dictionary_id: match.id,
-          fig_code: (match.direction || "") + match.code,
-          difficulty: match.difficulty_value,
+          dictionary_id: skill.id,
+          fig_code: (skill.direction || "") + skill.code,
+          difficulty: skill.difficulty_value,
         });
       } else {
         missingCodes.push(code);
@@ -350,20 +293,10 @@ export default function LogClient({
       setCurrentRoundSkills((prev) => [...prev, ...newSkills]);
       toast.success(`Applied ${preset.name}`);
     }
-
     if (missingCodes.length > 0) {
       toast.error(`Could not find: ${missingCodes.join(", ")}`);
     }
     setShowPresets(false);
-  };
-
-  const handleDeletePreset = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const result = await deleteSavedRound(id);
-    if (result.success) {
-      setSavedRounds((prev) => prev.filter((r) => r.id !== id));
-      toast.success("Preset deleted");
-    }
   };
 
   const handleRemoveSkill = (skillId: string) => {
@@ -374,7 +307,6 @@ export default function LogClient({
         setEditingRoundId(null);
         setCurrentInput("");
       }
-
       return updatedSkills;
     });
   };
@@ -383,6 +315,7 @@ export default function LogClient({
     if (rounds.length === 0) return;
     setIsFinishing(true);
   };
+
   const handleSaveSession = async () => {
     if (isSaving) return;
     setIsSaving(true);
@@ -393,15 +326,11 @@ export default function LogClient({
       setCurrentInput("");
       setRating(0);
       setNotes("");
-      toast.success("Session saved successfully!", {
-        duration: 4000,
-      });
+      toast.success("Session saved successfully!", { duration: 4000 });
       router.push("/dashboard");
     } else {
       setIsSaving(false);
-      toast.error("Failed to save session", {
-        duration: 4000,
-      });
+      toast.error("Failed to save session", { duration: 4000 });
     }
   };
 
@@ -443,8 +372,7 @@ export default function LogClient({
             <div
               onClick={() => {
                 if (currentInput.length > 0) {
-                  const finalCode = currentInput + skillSuggestion;
-                  addNewSkill(finalCode);
+                  addNewSkill(currentInput + skillSuggestion);
                 }
               }}
               className="flex-1 px-3 py-2 bg-card border border-border rounded-xl font-mono text-base flex items-center overflow-hidden"
