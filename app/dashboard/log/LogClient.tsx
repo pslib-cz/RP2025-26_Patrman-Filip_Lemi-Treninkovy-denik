@@ -552,7 +552,7 @@ export default function LogClient({
                         </div>
                         <button
                           onClick={(e) => handleDeletePreset(preset.id, e)}
-                          className="p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
