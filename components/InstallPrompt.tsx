@@ -88,17 +88,28 @@ export default function InstallPrompt() {
               "Install for a better experience!"
             )}
           </p>
-            {iosShowGuide && (
-              <div className="mt-4 border-t border-border pt-4">
-                <Image
-                  src="/shareguide.jpg"
-                  alt="Návod na přidání na plochu"
-                  width={300}
-                  height={500}
-                  className="rounded-xl w-full h-auto"
-                />
-              </div>
-            )}
+          {iosShowGuide && (
+            <div className="mt-4 border-t border-border pt-4">
+              <p className="text-xs text-muted-foreground mb-3">
+                Tap the{" "}
+                <span className="font-bold text-foreground">Share icon</span>{" "}
+                (or tap the{" "}
+                <span className="font-bold text-foreground">three dots</span>{" "}
+                first). Then scroll down and select{" "}
+                <span className="font-bold text-foreground">
+                  &apos;Add to Home Screen&apos;
+                </span>
+                . 
+              </p>
+              <Image
+                src="/shareguide.jpg"
+                alt="Návod na přidání na plochu"
+                width={300}
+                height={500}
+                className="rounded-xl w-full h-auto"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
