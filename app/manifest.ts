@@ -6,6 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Lemi",
     description: "Lemi - Treninkovy denik",
     start_url: "/",
+    scope: "/",
+    id: "/",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#ffffff",
