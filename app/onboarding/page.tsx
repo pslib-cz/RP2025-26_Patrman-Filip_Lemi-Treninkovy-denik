@@ -6,6 +6,7 @@ import Lemi from "@/components/Lemi-mascot";
 import toast from "react-hot-toast";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "lucide-react";
+import Image from "next/image";
 
 export default function OnboardingPage() {
   const [state, formAction] = useActionState(updateProfile, { error: null });
@@ -22,11 +23,11 @@ export default function OnboardingPage() {
 
     const toastId = toast.loading("Uploading..");
     const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-    const filePath = `${user.id}/${Math.random()}-${file.name}`;
+    const { 
+    data: { session } 
+  } = await supabase.auth.getSession();
+    if (!session?.user) return;
+    const filePath = `${session.user.id}/${Math.random()}-${file.name}`;
 
     const { error } = await supabase.storage
       .from("avatars")
@@ -75,7 +76,7 @@ export default function OnboardingPage() {
               className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-primary/10 overflow-hidden group hover:opacity-80 transition-opacity"
             >
               {avatarUrl ? (
-                <img
+                <Image
                   src={avatarUrl}
                   alt="Avatar"
                   className="h-full w-full object-cover rounded-full"

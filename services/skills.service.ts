@@ -3,13 +3,13 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function getSkills() {
     const supabase = await createClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return
+    const { 
+    data: { session } 
+  } = await supabase.auth.getSession();
+    if (!session?.user) return
     const [skills, userSkills] = await Promise.all([
         supabase.from("skills").select("*"),
-        supabase.from("user_skills").select("*").eq("user_id", user.id)
+        supabase.from("user_skills").select("*").eq("user_id", session.user.id)
     ])
       
     if (skills.error || userSkills.error) {

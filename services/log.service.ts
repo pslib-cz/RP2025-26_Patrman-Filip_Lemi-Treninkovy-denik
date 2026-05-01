@@ -7,8 +7,11 @@ import { Database } from "@/types/supabase";
 export async function finishTrainingSession(rounds: Round[], rating: number, notes: string) {
   const supabase = await createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
+    const { 
+    data: { session } 
+  } = await supabase.auth.getSession();
+
+  if (!session?.user) {
     return { success: false, error: "Not logged in" };
   }
   
@@ -35,7 +38,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
   .filter(skill => skill.fig_code === "-" && skill.tof !== undefined)
   .map(skill => {
     return {
-      user_id: user.id,
+      user_id: session.user.id,
       ten_jump_time: skill.tof!,
       created_at: new Date().toISOString(),
     }
@@ -44,7 +47,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
   const { data: sessionData, error: sessionError } = await supabase
     .from("sessions")
     .insert({
-      user_id: user.id,
+      user_id: session.user.id,
       max_difficulty: Number(maxDiff.toFixed(2)),
       total_difficulty: totalDiff,
       total_rounds: rounds.length,
@@ -80,7 +83,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
   .map(round => {
     return{
       session_id: sessionData.id,
-      user_id: user.id,
+      user_id: session.user.id,
       skills_string: round.skills
       .filter(skill => skill.fig_code !== "-")
       .map(skill => skill.fig_code).join(" "),
@@ -97,6 +100,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
   
     if (routinesError) {
       console.error("Error saving routines:", routinesError);
+      await supabase.from("sessions").delete().eq("id", sessionData.id);
       return { success: false, error: "Failed to save routines" };
     }
   }
@@ -108,6 +112,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
 
     if (ten_jump_timesError) {
       console.error("Error saving 10 jumps:", ten_jump_timesError);
+      await supabase.from("sessions").delete().eq("id", sessionData.id);
       return { success: false, error: "Failed to save 10 jumps" };
     }
   }
@@ -118,6 +123,7 @@ export async function finishTrainingSession(rounds: Round[], rating: number, not
 
   if (roundsError) {
     console.error("Error saving rounds:", roundsError);
+    await supabase.from("sessions").delete().eq("id", sessionData.id);
     return { success: false, error: "Failed to save rounds" };
   }
 

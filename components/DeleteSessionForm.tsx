@@ -1,14 +1,15 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 interface Props {
-  deleteAction: () => void;
+  deleteAction: () => Promise<void>;
 }
 
 export function DeleteSessionForm({ deleteAction }: Props) {
   const [showModal, setShowModal] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   return (
     <>
@@ -37,12 +38,13 @@ export function DeleteSessionForm({ deleteAction }: Props) {
               </div>
 
               <div className="flex flex-col gap-3 w-full mt-4">
-                <form action={deleteAction} className="w-full">
+                <form action={()=>startTransition(deleteAction)} className="w-full">
                   <button
                     type="submit"
+                    disabled={isPending}
                     className="w-full bg-destructive text-white hover:bg-destructive/90 active:scale-95 transition-all p-3.5 rounded-xl text-sm font-bold flex items-center justify-center shadow-md gap-2"
                   >
-                    Yes, delete it
+                    {isPending ? "Deleting..." : "Yes, delete it"}
                   </button>
                 </form>
                 

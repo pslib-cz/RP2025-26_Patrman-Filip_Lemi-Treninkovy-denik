@@ -23,7 +23,9 @@ export default async function SessionByIdPage({
   const { id } = await params;
   const session = await getSessionById(id);
 
-  if (!session) return <div>Training session not found</div>;
+  if (!session){
+     return redirect("/dashboard/sessions");
+  };
 
   const rounds: Round[] = session.rounds.map((round) => {
     return {
@@ -51,6 +53,7 @@ export default async function SessionByIdPage({
           <Link
             href="/dashboard/sessions"
             className="w-10 h-10 border border-border bg-card rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm transition-colors"
+            prefetch={true}
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>

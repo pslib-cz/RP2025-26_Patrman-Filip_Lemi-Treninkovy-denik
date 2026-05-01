@@ -8,6 +8,7 @@ import { updateProfileData } from "@/services/profile.service";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
 
 export const profileSchema = z.object({
   username: z.string().min(3, "Too short").max(20, "Too long"),
@@ -102,7 +103,7 @@ export function ProfileForm({ initialData, userId }: Props) {
         <div className="flex items-center gap-4">
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10">
             {currentAvatarUrl ? (
-              <img
+              <Image
                 src={currentAvatarUrl}
                 alt="Avatar"
                 className="h-full w-full object-cover rounded-full"

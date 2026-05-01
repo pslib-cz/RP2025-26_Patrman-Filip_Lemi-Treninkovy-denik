@@ -8,11 +8,13 @@ import { createClient } from "@/utils/supabase/server";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { 
+    data: { session } 
+  } = await supabase.auth.getSession();
 
-  const dashboardData = await getDashboardData(user?.id || "");
+  if (!session?.user?.id) return;
+  
+  const dashboardData = await getDashboardData(session.user.id);
 
   return (
     <div className="flex flex-col gap-4 p-4 md:mx-auto md:max-w-5xl md:p-8 md:pt-10">
@@ -64,6 +66,7 @@ export default async function DashboardPage() {
         {/* Right panel — CTA + recent trainings */}
         <div className="flex flex-col gap-4">
           <Link
+            prefetch={true}
             href="/dashboard/log"
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary p-3.5 font-bold text-white shadow-md transition-transform hover:scale-[1.02] md:p-4 md:text-base md:rounded-2xl"
           >

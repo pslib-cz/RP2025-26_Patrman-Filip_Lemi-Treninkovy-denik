@@ -3,8 +3,11 @@ import { redirect } from "next/navigation";
 
 export async function getSessionHistory(){
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
+    const { 
+    data: { session } 
+  } = await supabase.auth.getSession();
+  
+    if (!session?.user) return [];
 
     const { data: sessions, error } = await supabase
     .from('sessions')
@@ -26,7 +29,7 @@ export async function getSessionHistory(){
             tof
         )
     `)
-    .eq('user_id', user.id)
+    .eq('user_id', session.user.id)
     .order('date', { ascending: false });
 
     if (error) {
@@ -66,7 +69,7 @@ export async function getSessionById(id: string) {
     .single();
     if(error){
         console.error("Error fetching session:", error);
-        redirect("/dashboard/sessions");
+        return null;
     }
     return session
 }

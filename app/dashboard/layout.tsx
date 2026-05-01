@@ -11,14 +11,16 @@ export default async function DashboardLayout({
 }) {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { 
+    data: { session } 
+  } = await supabase.auth.getSession();
+  
+  if (!session?.user?.id) return;
 
   const { data: profile } = await supabase
     .from("profiles")
     .select("username")
-    .eq("id", user?.id || "")
+    .eq("id", session.user.id)
     .single();
 
   if (!profile?.username) {

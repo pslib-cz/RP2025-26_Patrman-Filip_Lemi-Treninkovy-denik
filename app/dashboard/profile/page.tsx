@@ -5,20 +5,22 @@ import { LogOut, Star } from "lucide-react";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { 
+    data: { session } 
+  } = await supabase.auth.getSession();
+
+  if (!session?.user?.id) return;
 
   const { data: profile } = await supabase
     .from("profiles")
     .select("username, full_name, age, gender, weight, height, avatar_url")
-    .eq("id", user?.id || "")
+    .eq("id", session.user.id)
     .single();
 
   const { data: routines } = await supabase
     .from("saved_rounds")
     .select("*")
-    .eq("user_id", user?.id || "")
+    .eq("user_id", session.user.id)
     .eq("is_routine", true)
     .order("created_at", { ascending: false });
 
@@ -45,7 +47,7 @@ export default async function ProfilePage() {
       <div className={`flex flex-col gap-4 ${routines?.length ? "md:grid md:grid-cols-2 md:gap-6 md:items-start" : "md:max-w-5xl lg:max-w-5xl"}`}>
         <div className="bg-card flex flex-col rounded-3xl shadow-sm border border-border p-5">
           <h2 className="text-foreground font-bold mb-5">Personal Information</h2>
-          <ProfileForm initialData={profile as ProfileData} userId={user?.id} />
+          <ProfileForm initialData={profile as ProfileData} userId={session.user.id} />
         </div>
 
         {routines && routines.length > 0 && (

@@ -33,6 +33,7 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={`flex flex-col items-center justify-center space-y-1 ${
                 isActive
                   ? "text-primary hover:text-muted-foreground"

@@ -71,6 +71,7 @@ export default function SessionClient({ sessions }: Props) {
                 <Link
                   href={`/dashboard/sessions/${rawSession.id}`}
                   key={rawSession.id}
+                  prefetch={true}
                 >
                   <SessionCard
                     date={formattedDate}
